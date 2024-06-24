@@ -9,12 +9,15 @@ Note:
 export default class NerualNetwork {
 	lambda: number;
 	model: any;
+
 	inputLayer: InputLayer;
 	hiddenLayers: Layer[];
-	isRegularized: boolean;
 	outputLayer: Layer;
-	optimizer: any;
-	lossFunction: any;
+
+	optimizer: Object;
+	lossFunctions: any;
+
+	isRegularized: boolean;
 	hasCompiled: boolean;
 
 	constructor(inputLayer: InputLayer, hiddenLayers: Layer[], outputLayer: Layer) {
@@ -24,8 +27,10 @@ export default class NerualNetwork {
 		this.hiddenLayers = hiddenLayers;
 		this.isRegularized = false;
 		this.lambda = -1;
-		this.optimizer = tensorflow.train.adam(1);
-		this.lossFunction = "categoricalCrossentropy";
+		//add more optimizer options here
+		this.optimizer = {"adam":tensorflow.train.adam(.01), "sgd": tensorflow.train.sgd()};
+		//add more loss function options here
+		this.lossFunctions = ['sigmoid', 'softmax', 'mean'];
 		this.hasCompiled = false;
 	}
 
@@ -40,6 +45,7 @@ export default class NerualNetwork {
 		for (let i = 0; i < this.hiddenLayers.length; i++) {
 			this.hiddenLayers[i].kernelRegularizer = tensorflow.regularizers.l2(lambda);
 		}
+		this.isRegularized = true;
 	}
 
 	removeRegularization() {
@@ -47,36 +53,42 @@ export default class NerualNetwork {
 		for (let i = 0; i < this.hiddenLayers.length; i++) {
 			this.hiddenLayers[i].kernelRegularizer = null;
 		}
+		this.isRegularized = false;
 	}
 
-	compile(input: any, output: any, epochs: number) {
-		let histroy: string[] = [];
+	compile() {
+		this.hasCompiled = true;
 		this.model.add(tensorflow.layers.dense(this.inputLayer));
 		for (let i = 0; i < this.hiddenLayers.length; i++) {
 			this.model.add(tensorflow.layers.dense(this.hiddenLayers[i]));
 		}
-		//edit its wrong look in ml notes: A.L.A. wk2 multi classification
-		if (this.outputLayer.activation == "softmax") {
-			let linear = structuredClone(this.outputLayer);
-			linear.activation = "linear";
-			this.model.add(tensorflow.layers.dense(linear));
-		}
 		this.model.add(tensorflow.layers.dense(this.outputLayer));
+		//change later: these opt and loss values are just for testing/protyping
+		let opt = tensorflow.train.adam(.01);
+		let loss = tensorflow.losses.sparseCategoricalCrossentropy({fromLogits: true})
+		this.model.compile({ optimizer: opt, loss:  loss});
+	}
 
-		this.model.compile({ optimizer: this.optimizer, loss: this.lossFunction });
-
+	fit(input: any, output: any, epochs: number){
+		let history: string[] = [];
+		if (!this.hasCompiled) return "ERROR: HAS NOT COMIPLED";
 		this.model.fit(input, output, {
 			epochs: epochs,
 			callbacks: {
-				onEpochEnd: (epoch: any, log: { loss: any }) => histroy.push(`Epoch ${epoch}: loss = ${log.loss}`),
+				onEpochEnd: (epoch: any, log: { loss: any }) => history.push(`Epoch ${epoch}: loss = ${log.loss}`),
 			},
 		});
+
+		return history;
 	}
 
 	//finish
-	predict() {
+	predict(X: any) {
 		if (!this.hasCompiled) return "ERROR: HAS NOT COMIPLED";
-		//this.model.predict
+		//fix later: add the ablility to run the addtional mapping
+		let logits = this.model.predict(X);
+		const f_X = tensorflow.softmax(logits);
+		return f_X.print()
 	}
 }
 
