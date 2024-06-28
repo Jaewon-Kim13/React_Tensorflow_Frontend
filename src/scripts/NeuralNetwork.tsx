@@ -28,9 +28,9 @@ export default class NerualNetwork {
 		this.isRegularized = false;
 		this.lambda = -1;
 		//add more optimizer options here
-		this.optimizer = {"adam":tensorflow.train.adam(.01), "sgd": tensorflow.train.sgd()};
+		this.optimizer = { adam: tensorflow.train.adam(0.01), sgd: tensorflow.train.sgd() };
 		//add more loss function options here
-		this.lossFunctions = ['sigmoid', 'softmax', 'mean'];
+		this.lossFunctions = ["sigmoid", "softmax", "mean"];
 		this.hasCompiled = false;
 	}
 
@@ -49,9 +49,9 @@ export default class NerualNetwork {
 	}
 
 	removeRegularization() {
-		this.inputLayer.kernelRegularizer = null;
+		this.inputLayer.kernelRegularizer = tensorflow.regularizers.l2(0);
 		for (let i = 0; i < this.hiddenLayers.length; i++) {
-			this.hiddenLayers[i].kernelRegularizer = null;
+			this.hiddenLayers[i].kernelRegularizer = tensorflow.regularizers.l2(0);
 		}
 		this.isRegularized = false;
 	}
@@ -64,12 +64,12 @@ export default class NerualNetwork {
 		}
 		this.model.add(tensorflow.layers.dense(this.outputLayer));
 		//change later: these opt and loss values are just for testing/protyping
-		let opt = tensorflow.train.adam(.01);
-		let loss = tensorflow.losses.sparseCategoricalCrossentropy({fromLogits: true})
-		this.model.compile({ optimizer: opt, loss:  loss});
+		let opt = tensorflow.train.adam(0.01);
+		let loss = tensorflow.losses.sparseCategoricalCrossentropy({ fromLogits: true });
+		this.model.compile({ optimizer: opt, loss: loss });
 	}
 
-	fit(input: any, output: any, epochs: number){
+	fit(input: any, output: any, epochs: number) {
 		let history: string[] = [];
 		if (!this.hasCompiled) return "ERROR: HAS NOT COMIPLED";
 		this.model.fit(input, output, {
@@ -88,7 +88,7 @@ export default class NerualNetwork {
 		//fix later: add the ablility to run the addtional mapping
 		let logits = this.model.predict(X);
 		const f_X = tensorflow.softmax(logits);
-		return f_X.print()
+		return f_X.print();
 	}
 }
 
