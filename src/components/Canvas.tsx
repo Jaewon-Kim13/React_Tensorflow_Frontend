@@ -8,17 +8,16 @@ import "./Canvas.css";
 interface Props {
 	rows: number;
 	cols: number;
-	gridArray?: any;
+	setGrid: any;
+	grid: any;
 }
 
-function Canvas({ rows, cols, gridArray }: Props) {
+function Canvas({ rows, cols, grid, setGrid }: Props) {
 	// State to hold the grid data, which is a 2D array of numbers (0 or 1)
-	const [grid, setGrid] = useState<number[][]>([]);
 	// State to track if the mouse is being dragged
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 	// Ref to the grid container element
 	const gridRef = useRef<HTMLDivElement>(null);
-
 	// Initialize the grid when the component mounts or when rows/cols change
 	useEffect(() => {
 		const initialGrid = Array.from({ length: rows }, () => Array.from({ length: cols }, () => 0));
@@ -54,9 +53,9 @@ function Canvas({ rows, cols, gridArray }: Props) {
 	// Toggle the state of a cell at (row, col)
 	//rewrite this function to only change cells that equal 0
 	const toggleCell = (row: number, col: number) => {
-		setGrid((prevGrid) => {
-			const newGrid = prevGrid.map((r, rowIndex) =>
-				r.map((cell, colIndex) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 0) : cell))
+		setGrid((prevGrid: any[]) => {
+			const newGrid = prevGrid.map((r: any[], rowIndex: number) =>
+				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 0) : cell))
 			);
 			return newGrid;
 		});
@@ -65,9 +64,9 @@ function Canvas({ rows, cols, gridArray }: Props) {
 	return (
 		<>
 			<div className="grid" ref={gridRef}>
-				{grid.map((row, rowIndex) => (
+				{grid.map((row: any[], rowIndex: number) => (
 					<div className="row" key={rowIndex}>
-						{row.map((cell, colIndex) => (
+						{row.map((cell: number, colIndex: number) => (
 							<div
 								className={`cell ${cell === 1 ? "highlighted" : ""}`}
 								key={colIndex}
