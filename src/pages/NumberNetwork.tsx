@@ -1,8 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Canvas from "../components/Canvas";
+import { Layer, InputLayer } from "../scripts/Interfaces";
+
 function NumberNetwork() {
-	const [grid, setGrid] = useState<number[][]>([]);
+	//Grid state info
+	const [grid, setGrid] = useState<number[][]>();
 	const rows = 20;
+
+	//Neural Netwok
+	const [layers, setLayers] = useState<Layer[]>();
+	const [inputLayer, setInputLayer] = useState<InputLayer>();
+	const [outputLayer, setOutputLayer] = useState<Layer>();
+	const [activation, setActivation] = useState();
+	const [lambda, setLambda] = useState();
+
+	//update the page when layers/input layer changes
+	useEffect(() => {}, [layers, inputLayer]);
 
 	return (
 		<>
@@ -24,7 +37,11 @@ function NumberNetwork() {
 						</button>
 						<button
 							onClick={() => {
-								/*CONVERT GRID TO 1D ARRAY*/
+								/*CONVERT GRID TO 1D ARRAY
+								Then feed that data to the input neurons
+								*/
+								const flatten = grid != undefined ? grid.flat(1) : null;
+								console.log(flatten);
 							}}
 						>
 							Check

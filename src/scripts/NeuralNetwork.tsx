@@ -1,5 +1,6 @@
 import { layers, regularizers, softmax } from "@tensorflow/tfjs";
 const tensorflow = require("@tensorflow/tfjs-node");
+import { Layer, InputLayer } from "./Interfaces";
 
 /*
 Note:
@@ -90,18 +91,4 @@ export default class NerualNetwork {
 		const f_X = tensorflow.softmax(logits);
 		return f_X.print();
 	}
-}
-
-export interface Layer {
-	name: string;
-	activation: string;
-	units: number;
-	kernelRegularizer?: any;
-}
-
-export interface InputLayer {
-	activation: string;
-	units: number;
-	kernelRegularizer?: any;
-	shape: any;
 }
