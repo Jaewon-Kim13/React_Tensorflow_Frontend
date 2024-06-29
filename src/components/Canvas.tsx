@@ -55,7 +55,7 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 	const toggleCell = (row: number, col: number) => {
 		setGrid((prevGrid: any[]) => {
 			const newGrid = prevGrid.map((r: any[], rowIndex: number) =>
-				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 0) : cell))
+				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 1) : cell))
 			);
 			return newGrid;
 		});
@@ -64,7 +64,7 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 	return (
 		<>
 			<div className="grid" ref={gridRef}>
-				{grid.map((row: any[], rowIndex: number) => (
+				{grid?.map((row: any[], rowIndex: number) => (
 					<div className="row" key={rowIndex}>
 						{row.map((cell: number, colIndex: number) => (
 							<div

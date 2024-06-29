@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Canvas from "../components/Canvas";
 import { Layer, InputLayer } from "../scripts/Interfaces";
+import NerualNetwork from "../scripts/NeuralNetwork";
 
 function NumberNetwork() {
 	//Grid state info
 	const [grid, setGrid] = useState<number[][]>();
-	const rows = 20;
+	const rows = 28;
 
 	//Neural Netwok
-	const [layers, setLayers] = useState<Layer[]>();
-	const [inputLayer, setInputLayer] = useState<InputLayer>();
-	const [outputLayer, setOutputLayer] = useState<Layer>();
-	const [activation, setActivation] = useState();
-	const [lambda, setLambda] = useState();
-
-	//update the page when layers/input layer changes
-	useEffect(() => {}, [layers, inputLayer]);
 
 	return (
 		<>
