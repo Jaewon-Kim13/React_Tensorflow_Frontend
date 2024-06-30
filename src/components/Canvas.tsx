@@ -1,6 +1,6 @@
 //NOTE I USED CHATGPT I DID NOT CODE THIS MYSELF!!! RECODE BEFORE FINAL COMMIT!
 //NEED TO LEARN useEffect and useRef
-//change toggle to not change already highlighted cells
+//change toggle to not change already highlighted cells ***FIXED
 
 import React, { useState, useRef, useEffect } from "react";
 import "./Canvas.css";

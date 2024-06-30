@@ -9,6 +9,29 @@ function NumberNetwork() {
 	const rows = 28;
 
 	//Neural Netwok
+	const [network, setNetwork] = useState<NerualNetwork>();
+	const inputShape = 28 * 28;
+	const classes = 9;
+
+	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>([
+		{ name: "Layer1", activation: "relu", units: 15, kernelRegularizer: 0 },
+		{ name: "Layer2", activation: "relu", units: 10, kernelRegularizer: 0 },
+		{ name: "Layer3", activation: "relu", units: 5, kernelRegularizer: 0 },
+		{ name: "Linear", activation: "linear", units: 9, kernelRegularizer: 0 },
+	]);
+	const [inputLayer, setInputLayer] = useState<InputLayer>({
+		activation: "relu",
+		units: 5,
+		kernelRegularizer: 0,
+		shape: 100,
+	});
+	const [outputLayer, setOutputLayer] = useState<Layer>();
+	const [activation, setActivation] = useState();
+	const [lambda, setLambda] = useState();
+	const [loss, setLoss] = useState();
+
+	//update the page when layers/input layer changes
+	useEffect(() => {}, [hiddenLayers, inputLayer]);
 
 	return (
 		<>
@@ -39,6 +62,7 @@ function NumberNetwork() {
 						>
 							Check
 						</button>
+						<button onClick={() => parseNumberData()}>Parse DATA</button>
 					</div>
 				</div>
 			</div>
@@ -47,3 +71,7 @@ function NumberNetwork() {
 }
 
 export default NumberNetwork;
+
+function parseNumberData() {
+
+}
