@@ -1,9 +1,20 @@
+/*NOTE: I am redesigning the site to be one page where you can load predefined models
+1.)The models will be stored in a database
+2.)There will be set training data stored in the database, so that the user can change the model and retrain it
+3.)Maybe add more pages for different types of problems, like 1 for nn and one for reinforcement training (will decied the algorithim later!)
+4.)the reseign moves the core sections into their own components for easier readability and combines everything in the Neuralbuilder page
+5.)Also note that the only data I will be add for now will be number_data, I might add EMNIST data at a later point
+ */
+
 import React, { useEffect, useState } from "react";
 import Canvas from "../components/Canvas";
 import { Layer, InputLayer } from "../scripts/Interfaces";
 import NerualNetwork from "../scripts/NeuralNetwork";
+import axios from "axios";
 
 function NumberNetwork() {
+	//data
+	const [trainingData, setTrainingData] = useState<any>();
 	//Grid state info
 	const [grid, setGrid] = useState<number[][]>();
 	const rows = 28;
@@ -31,7 +42,17 @@ function NumberNetwork() {
 	const [loss, setLoss] = useState();
 
 	//update the page when layers/input layer changes
-	useEffect(() => {}, [hiddenLayers, inputLayer]);
+	useEffect(() => {
+		const fetchTrainingData = async () => {
+			try {
+				const res = await axios.get("http://localhost:8800/number-data");
+				setTrainingData(res.data);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		fetchTrainingData();
+	}, [hiddenLayers, inputLayer, trainingData]);
 
 	return (
 		<>
@@ -62,7 +83,7 @@ function NumberNetwork() {
 						>
 							Check
 						</button>
-						<button onClick={() => parseNumberData()}>Parse DATA</button>
+						<div>{trainingData?.data}</div>
 					</div>
 				</div>
 			</div>
@@ -71,7 +92,3 @@ function NumberNetwork() {
 }
 
 export default NumberNetwork;
-
-function parseNumberData() {
-
-}
