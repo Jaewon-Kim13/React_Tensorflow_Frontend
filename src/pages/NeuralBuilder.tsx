@@ -26,15 +26,27 @@ export default function NeuralBuilder() {
 
 	const [numClasses, setNumClasses] = useState<number>();
 	const [outputLayer, setOutputLayer] = useState<Layer>();
-	//visualisation will use all of these!!!
+	//visualisation will use all layers!!!!
 
 	return (
 		<>
 			<div className="neural-container">
-				<div className="input-network-container"></div>
+				<div className="parameter-network-container">
+					<ParamaterForum
+						hiddenLayers={hiddenLayers}
+						setHiddenLayers={setHiddenLayers}
+						activation={activation}
+						setActivation={setActivation}
+						lambda={lambda}
+						setLambda={setLambda}
+						loss={loss}
+						setLoss={setLoss}
+					/>
+					<NeuralNetwork />
+				</div>
 				<div className="input-visual-container">
-					<div className="input-container"></div>
-					<div className="visual-container"></div>
+					<InputData />
+					<GraphVisualizer />
 				</div>
 			</div>
 		</>
