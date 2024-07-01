@@ -23,7 +23,6 @@ function ParamaterForum({
 }: Props) {
 	//Note: The sigmoid function is used for the two-class logistic regression, whereas the softmax function is used for the multiclass logistic regression
 	const lossList = ["sigmod-cross-entropy", "softmax-cross-entropy", "mean-square-error"];
-
 	const activationList = [
 		"elu",
 		"hardSigmoid",
