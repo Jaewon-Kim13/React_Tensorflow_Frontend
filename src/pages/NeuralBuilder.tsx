@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import { Layer, InputLayer } from "../scripts/Interfaces";
+import * as tf from "@tensorflow/tfjs";
+import { Layer, InputLayer } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
 
-import GraphVisualizer from "../components/GraphVisualizer";
-import InputData from "../components/InputData";
-import NeuralNetwork from "../components/NeuralNetwork";
-import ParamaterForum from "../components/ParamaterForum";
+import GraphVisualizer from "../components/Neural_Components/GraphVisualizer";
+import InputData from "../components/Neural_Components/InputData";
+import NeuralNetwork from "../components/Neural_Components/NeuralNetwork";
+import ParamaterForum from "../components/Neural_Components/ParamaterForum";
 
 export default function NeuralBuilder() {
 	//state for the whole network: NOTE THIS OBJECT IS IMMUTABLE!!!!
@@ -16,7 +17,9 @@ export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
 	const [defaultModels, setDefaultModels] = useState<any>();
 	//States for network parameters
-	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>();
+	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>([
+		{ name: "L1", activation: "relu", units: 5, kernelRegularizer: tf.regularizers.l2() },
+	]);
 	const [activation, setActivation] = useState();
 	const [lambda, setLambda] = useState();
 	const [loss, setLoss] = useState();
@@ -27,6 +30,9 @@ export default function NeuralBuilder() {
 	const [numClasses, setNumClasses] = useState<number>();
 	const [outputLayer, setOutputLayer] = useState<Layer>();
 	//visualisation will use all layers!!!!
+
+	//used for selecting the layer! needs to interface with the neural network visual
+	const [layerIndex, setLayerIndex] = useState<number>(0);
 
 	return (
 		<>
@@ -41,6 +47,7 @@ export default function NeuralBuilder() {
 						setLambda={setLambda}
 						loss={loss}
 						setLoss={setLoss}
+						layerIndex={layerIndex}
 					/>
 					<NeuralNetwork />
 				</div>

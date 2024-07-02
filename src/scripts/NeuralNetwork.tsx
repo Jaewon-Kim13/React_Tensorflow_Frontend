@@ -1,5 +1,5 @@
 import { layers, regularizers, softmax } from "@tensorflow/tfjs";
-import { Layer, InputLayer } from "./Interfaces";
+import { Layer, InputLayer } from "./NeuralScripts";
 
 //Look into the difference between tfjs and tfjs-node: so far it looks like it has something to do with runnijng in the client vs server!
 const ts = require("@tensorflow/tfjs");

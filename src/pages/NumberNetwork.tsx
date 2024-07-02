@@ -8,9 +8,10 @@
 
 import React, { useEffect, useState } from "react";
 import Canvas from "../components/Canvas";
-import { Layer, InputLayer } from "../scripts/Interfaces";
+import { Layer, InputLayer } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
 import axios from "axios";
+import DropdownMenu from "../components/DropdownMenu";
 
 function NumberNetwork() {
 	//data
@@ -84,6 +85,16 @@ function NumberNetwork() {
 							Check
 						</button>
 						<div>{trainingData?.data}</div>
+						<DropdownMenu
+							label={"pog"}
+							items={[
+								{
+									value: "pog",
+									handleOnClick: 1,
+									label: "5",
+								},
+							]}
+						/>
 					</div>
 				</div>
 			</div>
