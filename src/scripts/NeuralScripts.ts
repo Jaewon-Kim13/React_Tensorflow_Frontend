@@ -7,8 +7,8 @@ import * as tf from "@tensorflow/tfjs";
   //Look up tf.layers.dense on Tensorflow.js documentation
 /*const model_s = tf.sequential({
   layers: [
-    tf.layers.dense({ units: 6, activation: 'relu', name: 'L1' }),
-    tf.layers.dense({ units: 6, activation: 'linear', name: 'L3' })
+    tf.layers.dense({ units: 6, activation: 'relu', name: 'L1', regulaizer: REGFN }),
+    tf.layers.dense({ units: 6, activation: 'linear', name: 'L3', regulaizer: REGFN })
   ],
   name: 'Simple'
 });
@@ -29,7 +29,7 @@ const model_predict_s = (Xl) => {
 
 //Interfaces
 export interface Layer {
-	name: string;
+	name?: string;
 	activation: string;
 	units: number;
 	kernelRegularizer: any;
