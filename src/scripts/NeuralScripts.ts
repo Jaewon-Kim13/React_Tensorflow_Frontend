@@ -46,8 +46,20 @@ export interface Layer {
 export interface InputLayer {
 	activation: string;
 	units: number;
-	kernelRegularizer: any;
+	kernelRegularizer?: any;
 	shape: any;
+}
+
+export interface MyLayer {
+	name?: string;
+	activation: string;
+	units: number;
+	regularizer: Regularizer;
+}
+
+export interface Regularizer {
+	regularizer: string;
+	lambda: number;
 }
 
 //useful constants
@@ -90,17 +102,17 @@ export const regularizerList = ["l1","l2", "l1l2"]
 export const lambdaList = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3]
 
 //functions
-export function regularizerToFunction(regularizer: string, value: number) {
+export function regularizerToFunction(reg: Regularizer) {
 	let regularizerFunction;
-	switch (regularizer) {
+	switch (reg.regularizer) {
 		case "l1":
-			regularizerFunction = tf.regularizers.l1({l1:value});
+			regularizerFunction = tf.regularizers.l1({l1:reg.lambda});
 			break;
 		case "l2":
-			regularizerFunction = tf.regularizers.l2({l2:value});
+			regularizerFunction = tf.regularizers.l2({l2:reg.lambda});
 			break;
 		case "l1l2":
-			regularizerFunction = tf.regularizers.l1l2({l1: value, l2:value});
+			regularizerFunction = tf.regularizers.l1l2({l1: reg.lambda, l2:reg.lambda});
 			break;
 	}
 
@@ -108,6 +120,25 @@ export function regularizerToFunction(regularizer: string, value: number) {
 }
 
 
-export function updateLayer(layer: Layer|InputLayer, ){
+export function updateMyLayer(layer: MyLayer, paramName:string, value:any ){
+	switch(paramName) {
+		case "activation":
+			layer.activation = value;
+			break;
+		case "units":
+			layer.units = value;
+			break;
+		case "regularizer":
+			layer.regularizer.regularizer = value;
+			break;
+		case "lambda":
+			layer.regularizer.lambda = value
+			break;
+	}
+}
 
+export function convertLayer(layer: MyLayer){
+	return {	activation: layer.activation,
+		units: layer.units,
+		kernelRegularizer: regularizerToFunction(layer.regularizer)}
 }

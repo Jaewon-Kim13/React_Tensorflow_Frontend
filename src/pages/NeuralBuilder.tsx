@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import * as tf from "@tensorflow/tfjs";
-import { Layer, InputLayer } from "../scripts/NeuralScripts";
+import { Layer, InputLayer, regularizerList, MyLayer } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
 
 import GraphVisualizer from "../components/Neural_Components/GraphVisualizer";
@@ -17,12 +17,11 @@ export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
 	const [defaultModels, setDefaultModels] = useState<any>();
 	//States for network parameters
-	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>([
-		{ name: "L1", activation: "relu", units: 5, kernelRegularizer: tf.regularizers.l2() },
+	//note must convert from my layer to layer to add to the model!
+	const [hiddenLayers, setHiddenLayers] = useState<MyLayer[]>([
+		{ name: "L1", activation: "relu", units: 5, regularizer: { regularizer: "l1", lambda: 0 } },
 	]);
-	const [lambda, setLambda] = useState<number>(0);
 	const [loss, setLoss] = useState<string>("sparseCategoricalCrossentropy");
-	const [regularizer, setRegularizer] = useState<string>("l1");
 	//These States depend on input data and desired output
 	const [inputLayer, setInputLayer] = useState<InputLayer>();
 	const [inputShape, setInputShape] = useState<number>();
@@ -41,13 +40,9 @@ export default function NeuralBuilder() {
 					<ParamaterForum
 						hiddenLayers={hiddenLayers}
 						setHiddenLayers={setHiddenLayers}
-						lambda={lambda}
-						setLambda={setLambda}
 						loss={loss}
 						setLoss={setLoss}
 						layerIndex={layerIndex}
-						regularizer={regularizer}
-						setRegularizer={setRegularizer}
 					/>
 					<NeuralNetwork />
 				</div>

@@ -10,10 +10,10 @@ interface DropdownMenuProps {
 	label: string;
 	items: any[];
 	defaultSelected?: string;
-	onChange?: any;
+	setState?: any;
 }
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected, setState }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const dropItems = arrayToDropdownItem(items, label);
 	const [selectedItem, setSelectedItem] = useState<string>(defaultSelected || dropItems[0].value);
@@ -22,6 +22,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelect
 
 	const handleItemClick = (item: string): void => {
 		setSelectedItem(item);
+		setState(item);
 		setIsOpen(false);
 	};
 

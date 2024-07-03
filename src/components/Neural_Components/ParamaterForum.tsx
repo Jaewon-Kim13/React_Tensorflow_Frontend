@@ -2,40 +2,41 @@ import React, { useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 
 import { Layer } from "../../scripts/NeuralScripts";
-import { lossList, activationList, lambdaList, regularizerList } from "../../scripts/NeuralScripts";
+import { lossList, activationList, lambdaList, regularizerList, updateMyLayer } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
 
 interface Props {
 	hiddenLayers: any;
 	setHiddenLayers: any;
-	lambda: any;
-	setLambda: any;
 	loss: any;
 	setLoss: any;
 	layerIndex: any;
-	regularizer: any;
-	setRegularizer: any;
 }
 
 //Note: The sigmoid function is used for the two-class logistic regression, whereas the softmax function is used for the multiclass logistic regression
 
-function ParamaterForum({
-	hiddenLayers,
-	setHiddenLayers,
-	lambda,
-	setLambda,
-	loss,
-	setLoss,
-	layerIndex,
-	regularizer,
-	setRegularizer,
-}: Props) {
+function ParamaterForum({ hiddenLayers, setHiddenLayers, loss, setLoss, layerIndex }: Props) {
 	const [layerToggle, setLayerToggle] = useState<boolean>(false);
 	const [advanceToggle, setAdvnaceToggle] = useState<boolean>(false);
 
-	useEffect(() => {}, [hiddenLayers, lambda, loss]);
+	useEffect(() => {}, [hiddenLayers, loss]);
 
-	const updateLayer = () => {};
+	const lossToDropdownItem = () => {};
+	const updateLambda = (value: number) => {
+		let copy = [...hiddenLayers];
+		updateMyLayer(hiddenLayers[layerIndex], "lambda", value);
+		setHiddenLayers(copy);
+	};
+	const updateRegularizer = (value: string) => {
+		let copy = [...hiddenLayers];
+		updateMyLayer(copy[layerIndex], "regularizer", value);
+		setHiddenLayers(copy);
+	};
+	const updateActivation = (value: string) => {
+		let copy = [...hiddenLayers];
+		updateMyLayer(copy[layerIndex], "activation", value);
+		setHiddenLayers(copy);
+	};
 
 	return (
 		<>
@@ -47,17 +48,31 @@ function ParamaterForum({
 					}}
 				/>
 				<div>Select all hidden layers {!layerToggle && "Layer: " + layerIndex}</div>
-				<DropdownMenu defaultSelected={loss} label={"Loss"} items={lossList} />
+				<DropdownMenu defaultSelected={loss} setState={setLoss} label={"Loss"} items={lossList} />
 				<DropdownMenu
 					defaultSelected={hiddenLayers[layerIndex].activation}
+					setState={updateActivation}
 					label={"Activation"}
 					items={activationList}
 				/>
-				<DropdownMenu defaultSelected={regularizer} label={"regularizer"} items={regularizerList} />
-				<DropdownMenu defaultSelected={lambda} label={"Lambda"} items={lambdaList} />
+				<DropdownMenu
+					defaultSelected={hiddenLayers[layerIndex].regularizer.regularizer}
+					setState={updateRegularizer}
+					label={"regularizer"}
+					items={regularizerList}
+				/>
+				<DropdownMenu
+					defaultSelected={hiddenLayers[layerIndex].regularizer.lambda}
+					setState={updateLambda}
+					label={"Lambda"}
+					items={lambdaList}
+				/>
 			</div>
 
-			<div className="output-layer-parameters"></div>
+			<div className="output-layer-parameters">
+				TEST:
+				{JSON.stringify(hiddenLayers)}
+			</div>
 
 			<div className="compiler-parameters"></div>
 
@@ -67,7 +82,5 @@ function ParamaterForum({
 		</>
 	);
 }
-
-const lossToDropdownItem = () => {};
 
 export default ParamaterForum;
