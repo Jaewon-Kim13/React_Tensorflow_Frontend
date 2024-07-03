@@ -27,6 +27,14 @@ const model_predict_s = (Xl) => {
   });
 }; */
 
+/*
+also note:
+Adam uses a moving average of the parameters, which means that it can take longer to converge than other optimizers. This may not be a problem for many problems, but for tasks with a large number of parameters or very small data sets, Adam may be too slow.
+Adam is sensitive to the scale of the gradients, so it is important to scale your data before training a model with Adam. If the scale of the gradients is not well-tuned, Adam may have trouble converging.
+Adam can also be sensitive to the choice of hyperparameters. It is important to tune the learning rate and other hyperparameters carefully to ensure good performance.
+So, there is no one-size-fits-all optimizer that works best for every problem, and Adam is no exception.
+*/
+
 //Interfaces
 export interface Layer {
 	name?: string;
@@ -76,6 +84,8 @@ export const activationList = [
 	"gelu",
 	"gelu_new",
 ];
+
+export const regularizerList = ["l1","l2", "l1l2"]
 
 export const lambdaList = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3]
 

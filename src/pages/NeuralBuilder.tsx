@@ -20,9 +20,9 @@ export default function NeuralBuilder() {
 	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>([
 		{ name: "L1", activation: "relu", units: 5, kernelRegularizer: tf.regularizers.l2() },
 	]);
-	const [activation, setActivation] = useState();
-	const [lambda, setLambda] = useState();
-	const [loss, setLoss] = useState();
+	const [lambda, setLambda] = useState<number>(0);
+	const [loss, setLoss] = useState<string>("sparseCategoricalCrossentropy");
+	const [regularizer, setRegularizer] = useState<string>("l1");
 	//These States depend on input data and desired output
 	const [inputLayer, setInputLayer] = useState<InputLayer>();
 	const [inputShape, setInputShape] = useState<number>();
@@ -41,13 +41,13 @@ export default function NeuralBuilder() {
 					<ParamaterForum
 						hiddenLayers={hiddenLayers}
 						setHiddenLayers={setHiddenLayers}
-						activation={activation}
-						setActivation={setActivation}
 						lambda={lambda}
 						setLambda={setLambda}
 						loss={loss}
 						setLoss={setLoss}
 						layerIndex={layerIndex}
+						regularizer={regularizer}
+						setRegularizer={setRegularizer}
 					/>
 					<NeuralNetwork />
 				</div>

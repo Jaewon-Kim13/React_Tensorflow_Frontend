@@ -4,18 +4,19 @@ import "./DropdownMenu.css";
 export interface DropdownItem {
 	label: string;
 	value: string;
-	handleOnClick?: any;
 }
 
 interface DropdownMenuProps {
 	label: string;
-	items: DropdownItem[];
+	items: any[];
 	defaultSelected?: string;
+	onChange?: any;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const [selectedItem, setSelectedItem] = useState<string>(defaultSelected || items[0].label);
+	const dropItems = arrayToDropdownItem(items, label);
+	const [selectedItem, setSelectedItem] = useState<string>(defaultSelected || dropItems[0].value);
 
 	const toggleDropdown = (): void => setIsOpen(!isOpen);
 
@@ -34,9 +35,9 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelect
 				</div>
 				{isOpen && (
 					<ul className="dropdown-list">
-						{items.map((item) => (
-							<li key={item.value} onClick={() => handleItemClick(item.label)}>
-								{item.label}
+						{dropItems.map((item) => (
+							<li key={item.label} onClick={() => handleItemClick(item.value)}>
+								{item.value}
 							</li>
 						))}
 					</ul>
@@ -44,6 +45,15 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelect
 			</div>
 		</div>
 	);
+};
+
+const arrayToDropdownItem = (items: any[], label: string) => {
+	let dropdownItems: DropdownItem[] = [];
+	items.map((value, index) => {
+		let temp = { label: label + index, value: value };
+		dropdownItems.push(temp);
+	});
+	return dropdownItems;
 };
 
 export default DropdownMenu;
