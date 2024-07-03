@@ -7,8 +7,8 @@ import * as tf from "@tensorflow/tfjs";
   //Look up tf.layers.dense on Tensorflow.js documentation
 /*const model_s = tf.sequential({
   layers: [
-    tf.layers.dense({ units: 6, activation: 'relu', name: 'L1', regulaizer: REGFN }),
-    tf.layers.dense({ units: 6, activation: 'linear', name: 'L3', regulaizer: REGFN })
+    tf.layers.dense({ units: 6, activation: 'relu', name: 'L1', regulaizer: REG_FN }),
+    tf.layers.dense({ units: 6, activation: 'linear', name: 'L3', regulaizer: REG_FN })
   ],
   name: 'Simple'
 });
@@ -37,21 +37,12 @@ So, there is no one-size-fits-all optimizer that works best for every problem, a
 
 //Interfaces
 export interface Layer {
-	name?: string;
 	activation: string;
 	units: number;
 	kernelRegularizer: any;
 }
 
-export interface InputLayer {
-	activation: string;
-	units: number;
-	kernelRegularizer?: any;
-	shape: any;
-}
-
 export interface MyLayer {
-	name?: string;
 	activation: string;
 	units: number;
 	regularizer: Regularizer;
