@@ -1,0 +1,74 @@
+/* ParameterForum.css */
+
+.parameter-forum {
+    background-color: #f0f0f0;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+    color: white;
+  }
+  
+  .layer-parameter-container,
+  .other-parameters {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .layer-toggle-container,
+  .unit-input-container,
+  .advance-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  input[type="checkbox"],
+  input[type="number"] {
+    margin-right: 5px;
+  }
+  
+  .dropdown-menu {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-menu select {
+    appearance: none;
+    background-color: #444;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .test-div {
+    background-color: #ddd;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.8em;
+    overflow-wrap: break-word;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .nav-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .layer-parameter-container,
+    .other-parameters {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+  }

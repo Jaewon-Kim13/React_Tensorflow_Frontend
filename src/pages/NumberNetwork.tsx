@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from "react";
 import Canvas from "../components/Canvas";
-import { Layer, InputLayer } from "../scripts/NeuralScripts";
+import { Layer } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
 import axios from "axios";
 import DropdownMenu from "../components/DropdownMenu";
@@ -26,17 +26,12 @@ function NumberNetwork() {
 	const classes = 9;
 
 	const [hiddenLayers, setHiddenLayers] = useState<Layer[]>([
-		{ name: "Layer1", activation: "relu", units: 15, kernelRegularizer: 0 },
-		{ name: "Layer2", activation: "relu", units: 10, kernelRegularizer: 0 },
-		{ name: "Layer3", activation: "relu", units: 5, kernelRegularizer: 0 },
-		{ name: "Linear", activation: "linear", units: 9, kernelRegularizer: 0 },
+		{  activation: "relu", units: 15, kernelRegularizer: 0 },
+		{  activation: "relu", units: 10, kernelRegularizer: 0 },
+		{  activation: "relu", units: 5, kernelRegularizer: 0 },
+		{  activation: "linear", units: 9, kernelRegularizer: 0 },
 	]);
-	const [inputLayer, setInputLayer] = useState<InputLayer>({
-		activation: "relu",
-		units: 5,
-		kernelRegularizer: 0,
-		shape: 100,
-	});
+
 	const [outputLayer, setOutputLayer] = useState<Layer>();
 	const [activation, setActivation] = useState();
 	const [lambda, setLambda] = useState();
@@ -53,7 +48,7 @@ function NumberNetwork() {
 			}
 		};
 		fetchTrainingData();
-	}, [hiddenLayers, inputLayer, trainingData]);
+	}, [ trainingData]);
 
 	return (
 		<>

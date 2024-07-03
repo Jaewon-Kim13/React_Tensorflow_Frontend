@@ -12,14 +12,16 @@ interface Props {
 	loss: any;
 	setLoss: any;
 	layerIndex: any;
-	setDataSet: any;
+	dataSetList: string[];
+	dataSetName: string;
+	setDataSetName: any;
 	epoch: number;
 	setEpoch: any;
 }
 
 //Note: The sigmoid function is used for the two-class logistic regression, whereas the softmax function is used for the multiclass logistic regression
 //Note: onclicking inputlayer set layerindex "-1" onclicking outputlayer set layerindex "-2"
-function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataSet, epoch, setEpoch }: Props) {
+function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataSetName, epoch, setEpoch, dataSetList, dataSetName }: Props) {
 	const [layerToggle, setLayerToggle] = useState<boolean>(false);
 	const [advanceToggle, setAdvnaceToggle] = useState<boolean>(false);
 
@@ -58,7 +60,7 @@ function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataS
 
 	return (
 		<>
-			<div className="parameter-container">
+			<div className="layer-parameter-container">
 				<div className="layer-toggle-container">
 					<input
 						type="checkbox"
@@ -91,25 +93,27 @@ function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataS
 					items={lambdaList}
 				/>
 			</div>
-			<div className="compiler-parameters">
+			<div className="other-parameters">
 				Other options
+				<DropdownMenu defaultSelected={dataSetName} setState={setDataSetName} label={"Dataset-name"} items ={dataSetList}/>
 				<DropdownMenu defaultSelected={loss} setState={setLoss} label={"Loss"} items={lossList} />
 				<div className="unit-input-container">
 					<div>Epochs</div>
 					<input type="number" value={epoch} onChange={handleEpochChange} placeholder="Enter units" />
 				</div>
+				<div className="advance-container">
+					This is for mapping the a linear output to a different loss function!
+					<input
+						type="checkbox"
+						onClick={() => {
+							setAdvnaceToggle(!advanceToggle);
+						}}
+					/>
+					<div>Advance settings</div>
+					{advanceToggle && <div className="advanced-parameters">Cuck</div>}
+				</div>
 			</div>
-			<div className="advance-container">
-				This is for mapping the a linear output to a different loss function!
-				<input
-					type="checkbox"
-					onClick={() => {
-						setAdvnaceToggle(!advanceToggle);
-					}}
-				/>
-				<div>Advance settings</div>
-				{advanceToggle && <div className="advanced-parameters">Cuck</div>}
-			</div>
+			
 			<div className="test div">
 				{JSON.stringify(layers[layerIndex])} -- epoch={epoch} -- loss = {loss}
 			</div>

@@ -8,7 +8,8 @@ import NerualNetwork from "../scripts/NeuralNetwork";
 import GraphVisualizer from "../components/Neural_Components/GraphVisualizer";
 import InputData from "../components/Neural_Components/InputData";
 import NeuralNetwork from "../components/Neural_Components/NeuralNetwork";
-import ParamaterForum from "../components/Neural_Components/ParamaterForum";
+import ParamaterForum from "../components/Neural_Components/ParameterForum";
+import Test from "../components/Neural_Components/Test";
 
 export default function NeuralBuilder() {
 	//New section for loading/saving model: THIS NEEDS TO BE CONNECTED TO THE DB
@@ -16,14 +17,16 @@ export default function NeuralBuilder() {
 	const [defaultModels, setDefaultModels] = useState<any>();
 
 	//section for data
-	const [dataSet, setDataSet] = useState<string>();
-	const [dataSetList, setDataSetList] = useState<string[]>();
+	const [dataSetName, setDataSetName] = useState<string>("numbers");
+	const [dataSetList, setDataSetList] = useState<string[]>([""]);
 	const [data, setData] = useState<any>();
-	const [shape, setShape] = useState<any>();
+	const [shape, setShape] = useState<any>(784);
 
 	//States for network parameters **note must convert from mylayer to layer to add to compiler
 	const [layers, setLayers] = useState<MyLayer[]>([
+		{ activation: "relu", units: 15, regularizer: { regularizer: "l1", lambda: 0 } },
 		{ activation: "relu", units: 5, regularizer: { regularizer: "l1", lambda: 0 } },
+		{ activation: "relu", units: 3, regularizer: { regularizer: "l1", lambda: 0 } },
 	]);
 	const [loss, setLoss] = useState<string>("sparseCategoricalCrossentropy");
 	const [epoch, setEpoch] = useState<number>(100);
@@ -31,8 +34,22 @@ export default function NeuralBuilder() {
 	const [layerIndex, setLayerIndex] = useState<number>(0);
 
 	useEffect(() => {
-		//Fetch the data set list on load! in form {name: string; classes?: number shape: number} **NOTE WHEN I PRESS COMIPLE IT WILL THEN FETCH
-	}, []);
+		//Fetch the data set list on load! in form [{name: string; classes?: number shape: number}] **NOTE WHEN I PRESS COMIPLE IT WILL THEN FETCH
+		const fetchTrainingData = async () => {
+			try {
+				const res = await axios.get("http://localhost:8800/number-data");
+				setData(res.data);
+
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		//just for testing!
+		setShape(784);
+		setDataSetList(["numbers"])
+		setDataSetName("numbers")
+		fetchTrainingData();
+	}, [setData]);
 
 	return (
 		<>
@@ -44,9 +61,11 @@ export default function NeuralBuilder() {
 						loss={loss}
 						setLoss={setLoss}
 						layerIndex={layerIndex}
-						setDataSet={setDataSet}
+						setDataSetName={setDataSetName}
+						dataSetList={dataSetList}
 						epoch={epoch}
 						setEpoch={setEpoch}
+						dataSetName = {dataSetName}
 					/>
 					<NeuralNetwork />
 				</div>
