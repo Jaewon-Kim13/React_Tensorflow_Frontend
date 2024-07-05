@@ -5,6 +5,8 @@ import { Layer } from "../../scripts/NeuralScripts";
 import { lossList, activationList, lambdaList, regularizerList, updateMyLayer } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
 
+import "./ParameterForum.css";
+
 //Note: I need to add an option for selecting the data set and then fetching the correct dataset form the db and fitting the model to it
 interface Props {
 	layers: any;
@@ -21,7 +23,18 @@ interface Props {
 
 //Note: The sigmoid function is used for the two-class logistic regression, whereas the softmax function is used for the multiclass logistic regression
 //Note: onclicking inputlayer set layerindex "-1" onclicking outputlayer set layerindex "-2"
-function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataSetName, epoch, setEpoch, dataSetList, dataSetName }: Props) {
+function ParamaterForum({
+	layers,
+	setLayers,
+	loss,
+	setLoss,
+	layerIndex,
+	setDataSetName,
+	epoch,
+	setEpoch,
+	dataSetList,
+	dataSetName,
+}: Props) {
 	const [layerToggle, setLayerToggle] = useState<boolean>(false);
 	const [advanceToggle, setAdvnaceToggle] = useState<boolean>(false);
 
@@ -60,60 +73,71 @@ function ParamaterForum({ layers, setLayers, loss, setLoss, layerIndex, setDataS
 
 	return (
 		<>
-			<div className="layer-parameter-container">
-				<div className="layer-toggle-container">
-					<input
-						type="checkbox"
-						onClick={() => {
-							setLayerToggle(!layerToggle);
-						}}
+			<div className="parameter-container">
+				<div className="layer-parameter-container">
+					<div className="layer-toggle-container">
+						<input
+							type="checkbox"
+							onClick={() => {
+								setLayerToggle(!layerToggle);
+							}}
+						/>
+						<div>Select all layers {!layerToggle && "Layer: " + layerIndex}</div>
+					</div>
+					<div className="unit-input-container">
+						<div>Units</div>
+						<input
+							type="number"
+							value={layers[layerIndex].units}
+							onChange={handleUnitChange}
+							placeholder="Enter units"
+						/>
+					</div>
+					<DropdownMenu
+						defaultSelected={layers[layerIndex].activation}
+						setState={updateActivation}
+						label={"Activation"}
+						items={activationList}
 					/>
-					<div>Select all layers {!layerToggle && "Layer: " + layerIndex}</div>
-				</div>
-				<div className="unit-input-container">
-					<div>Units</div>
-					<input type="number" value={layers[layerIndex].units} onChange={handleUnitChange} placeholder="Enter units" />
-				</div>
-				<DropdownMenu
-					defaultSelected={layers[layerIndex].activation}
-					setState={updateActivation}
-					label={"Activation"}
-					items={activationList}
-				/>
-				<DropdownMenu
-					defaultSelected={layers[layerIndex].regularizer.regularizer}
-					setState={updateRegularizer}
-					label={"regularizer"}
-					items={regularizerList}
-				/>
-				<DropdownMenu
-					defaultSelected={layers[layerIndex].regularizer.lambda}
-					setState={updateLambda}
-					label={"Lambda"}
-					items={lambdaList}
-				/>
-			</div>
-			<div className="other-parameters">
-				Other options
-				<DropdownMenu defaultSelected={dataSetName} setState={setDataSetName} label={"Dataset-name"} items ={dataSetList}/>
-				<DropdownMenu defaultSelected={loss} setState={setLoss} label={"Loss"} items={lossList} />
-				<div className="unit-input-container">
-					<div>Epochs</div>
-					<input type="number" value={epoch} onChange={handleEpochChange} placeholder="Enter units" />
-				</div>
-				<div className="advance-container">
-					This is for mapping the a linear output to a different loss function!
-					<input
-						type="checkbox"
-						onClick={() => {
-							setAdvnaceToggle(!advanceToggle);
-						}}
+					<DropdownMenu
+						defaultSelected={layers[layerIndex].regularizer.regularizer}
+						setState={updateRegularizer}
+						label={"regularizer"}
+						items={regularizerList}
 					/>
-					<div>Advance settings</div>
-					{advanceToggle && <div className="advanced-parameters">Cuck</div>}
+					<DropdownMenu
+						defaultSelected={layers[layerIndex].regularizer.lambda}
+						setState={updateLambda}
+						label={"Lambda"}
+						items={lambdaList}
+					/>
+				</div>
+				<div className="other-parameters">
+					Other options
+					<DropdownMenu
+						defaultSelected={dataSetName}
+						setState={setDataSetName}
+						label={"Dataset-name"}
+						items={dataSetList}
+					/>
+					<DropdownMenu defaultSelected={loss} setState={setLoss} label={"Loss"} items={lossList} />
+					<div className="unit-input-container">
+						<div>Epochs</div>
+						<input type="number" value={epoch} onChange={handleEpochChange} placeholder="Enter units" />
+					</div>
+					<div className="advance-container">
+						This is for mapping the a linear output to a different loss function!
+						<input
+							type="checkbox"
+							onClick={() => {
+								setAdvnaceToggle(!advanceToggle);
+							}}
+						/>
+						<div>Advance settings</div>
+						{advanceToggle && <div className="advanced-parameters">Cuck</div>}
+					</div>
 				</div>
 			</div>
-			
 			<div className="test div">
 				{JSON.stringify(layers[layerIndex])} -- epoch={epoch} -- loss = {loss}
 			</div>

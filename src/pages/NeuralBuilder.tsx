@@ -4,6 +4,7 @@ import axios from "axios";
 import * as tf from "@tensorflow/tfjs";
 import { Layer, regularizerList, MyLayer } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
+import "./NeuralBuilder.css";
 
 import GraphVisualizer from "../components/Neural_Components/GraphVisualizer";
 import InputData from "../components/Neural_Components/InputData";
@@ -19,8 +20,10 @@ export default function NeuralBuilder() {
 	//section for data
 	const [dataSetName, setDataSetName] = useState<string>("numbers");
 	const [dataSetList, setDataSetList] = useState<string[]>([""]);
-	const [data, setData] = useState<any>();
+	const [dataJSON, setDataJSON] = useState<any>();
 	const [shape, setShape] = useState<any>(784);
+	const [results, setResults] = useState<any>(null);
+	const [input, setInput] = useState<any>(null);
 
 	//States for network parameters **note must convert from mylayer to layer to add to compiler
 	const [layers, setLayers] = useState<MyLayer[]>([
@@ -38,18 +41,17 @@ export default function NeuralBuilder() {
 		const fetchTrainingData = async () => {
 			try {
 				const res = await axios.get("http://localhost:8800/number-data");
-				setData(res.data);
-
+				setDataJSON(res.data);
 			} catch (error) {
 				console.log(error);
 			}
 		};
 		//just for testing!
 		setShape(784);
-		setDataSetList(["numbers"])
-		setDataSetName("numbers")
+		setDataSetList(["numbers", "TEST"]);
+		setDataSetName("numbers");
 		fetchTrainingData();
-	}, [setData]);
+	}, [setDataJSON]);
 
 	return (
 		<>
@@ -65,13 +67,18 @@ export default function NeuralBuilder() {
 						dataSetList={dataSetList}
 						epoch={epoch}
 						setEpoch={setEpoch}
-						dataSetName = {dataSetName}
+						dataSetName={dataSetName}
 					/>
 					<NeuralNetwork />
 				</div>
 				<div className="input-visual-container">
-					<InputData />
+					<InputData dataSetName={dataSetName} setInput={setInput} dataJSON={dataJSON} />
 					<GraphVisualizer />
+				</div>
+				TEST
+				<div className="TEST">
+					<button onClick={() => {}}>COMPILE</button>
+					<div>{input?.toString()}</div>
 				</div>
 			</div>
 		</>

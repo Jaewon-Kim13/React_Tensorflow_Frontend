@@ -1,0 +1,15 @@
+.parameter-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    background-color: rgb(206, 206, 206);
+}
+
+.layer-parameter-container {
+    display: grid;
+    grid-template-columns: 10% 22.5% 22.5% 22.5% 22.5%;
+}
+
+.other-parameters {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+}
