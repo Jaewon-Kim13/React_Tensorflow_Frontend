@@ -13,7 +13,3 @@
     height: 20px;
     border: 1px solid #ddd;
   }
-  
-  .cell.highlighted {
-    background-color: yellow;
-  }

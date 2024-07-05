@@ -55,7 +55,7 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 	const toggleCell = (row: number, col: number) => {
 		setGrid((prevGrid: any[]) => {
 			const newGrid = prevGrid.map((r: any[], rowIndex: number) =>
-				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 1) : cell))
+				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? 255 : cell))
 			);
 			return newGrid;
 		});
@@ -68,8 +68,9 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 					<div className="row" key={rowIndex}>
 						{row.map((cell: number, colIndex: number) => (
 							<div
-								className={`cell ${cell === 1 ? "highlighted" : ""}`}
+								className="cell"
 								key={colIndex}
+								style={{ backgroundColor: `rgba(0,0,0,${cell})` }}
 								onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
 								onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 							></div>
