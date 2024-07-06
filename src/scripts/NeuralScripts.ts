@@ -35,6 +35,40 @@ Adam can also be sensitive to the choice of hyperparameters. It is important to 
 So, there is no one-size-fits-all optimizer that works best for every problem, and Adam is no exception.
 */
 
+
+export const compileModel = async (layers: MyLayer[], loss: string, data: {x: number[][], y: number[], shape: number}, epoch: number): Promise<tf.LayersModel> => {
+	const newLayers:any = layers.map((layer)=>({activation: layer.activation, units: layer.units, kernelRegularizer: regularizerToFunction(layer.regularizer)}))
+	newLayers[0].inputShape = data.shape;
+	const model = tf.sequential();
+	newLayers.forEach((layer: any, index: any) =>{model.add(tf.layers.dense(layer))})
+
+	model.compile({
+	  loss: loss,
+	  optimizer: tf.train.adam(0.01),
+	  metrics: ['accuracy']
+	});
+  
+	const history = await model.fit(tf.tensor(data.x), tf.tensor(data.y), {
+	  epochs: epoch,
+	  batchSize: 100,
+	  callbacks: {
+		onEpochEnd: (epoch, logs) => {
+		  console.log(`Epoch ${epoch + 1}: loss = ${logs?.loss.toFixed(4)}, accuracy = ${logs?.acc.toFixed(4)}`);
+		}
+	  }
+	});
+  
+	console.log('Final accuracy', history.history.acc[history.history.acc.length - 1]);
+	console.log(model)
+  
+	return model;
+};
+
+export const predict = (data: number[], model: any) => {
+	const tensor = tf.tensor(data);
+
+}
+
 //Interfaces
 export interface Layer {
 	activation: string;
@@ -51,6 +85,12 @@ export interface MyLayer {
 export interface Regularizer {
 	regularizer: string;
 	lambda: number;
+}
+
+export interface JSONData {
+	type: string; 
+	size: number[];
+	data: {x: number[][], y: number[]}
 }
 
 //useful constants

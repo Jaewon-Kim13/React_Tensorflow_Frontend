@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import * as tf from "@tensorflow/tfjs";
-import { Layer, regularizerList, MyLayer } from "../scripts/NeuralScripts";
+import { Layer, regularizerList, MyLayer, compileModel, JSONData } from "../scripts/NeuralScripts";
 import NerualNetwork from "../scripts/NeuralNetwork";
 import "./NeuralBuilder.css";
 
@@ -11,16 +11,19 @@ import InputData from "../components/Neural_Components/InputData";
 import NeuralNetwork from "../components/Neural_Components/NeuralNetwork";
 import ParamaterForum from "../components/Neural_Components/ParameterForum";
 import Test from "../components/Neural_Components/Test";
+import { ftruncate } from "fs";
+import { json } from "stream/consumers";
 
 export default function NeuralBuilder() {
 	//New section for loading/saving model: THIS NEEDS TO BE CONNECTED TO THE DB
 	const [userModels, setUserModels] = useState<any>();
 	const [defaultModels, setDefaultModels] = useState<any>();
+	const [model, setModel] = useState<any>(null);
 
 	//section for data
 	const [dataSetName, setDataSetName] = useState<string>("numbers");
 	const [dataSetList, setDataSetList] = useState<string[]>([""]);
-	const [dataJSON, setDataJSON] = useState<any>();
+	const [dataJSON, setDataJSON] = useState<JSONData>({ type: "error", size: [1, 1], data: { x: [[0]], y: [0] } });
 	const [shape, setShape] = useState<any>(784);
 	const [results, setResults] = useState<any>(null);
 	const [input, setInput] = useState<any>(null);
@@ -77,8 +80,15 @@ export default function NeuralBuilder() {
 				</div>
 				TEST
 				<div className="TEST">
-					<button onClick={() => {}}>COMPILE</button>
-					<div>{input?.toString()}</div>
+					<button
+						onClick={() => {
+							setModel(compileModel(layers, loss, { x: dataJSON.data.x, y: dataJSON.data.y, shape: shape }, epoch));
+						}}
+					>
+						COMPILE
+					</button>
+					<button>Test input</button>
+					<div>{JSON.stringify(model)}</div>
 				</div>
 			</div>
 		</>
