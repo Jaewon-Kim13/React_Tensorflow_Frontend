@@ -98,18 +98,21 @@ function ParamaterForum({
 						setState={updateActivation}
 						label={"Activation"}
 						items={activationList}
+						layerState={layers[layerIndex]}
 					/>
 					<DropdownMenu
 						defaultSelected={layers[layerIndex].regularizer.regularizer}
 						setState={updateRegularizer}
-						label={"regularizer"}
+						label={"Regularizer"}
 						items={regularizerList}
+						layerState={layers[layerIndex]}
 					/>
 					<DropdownMenu
 						defaultSelected={layers[layerIndex].regularizer.lambda}
 						setState={updateLambda}
 						label={"Lambda"}
 						items={lambdaList}
+						layerState={layers[layerIndex]}
 					/>
 				</div>
 				<div className="other-parameters">

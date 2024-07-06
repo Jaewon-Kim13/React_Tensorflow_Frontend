@@ -70,7 +70,7 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 							<div
 								className="cell"
 								key={colIndex}
-								style={{ backgroundColor: `rgba(0,0,0,${cell})` }}
+								style={{ backgroundColor: `rgba(0,0,0,${cell / 255})` }}
 								onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
 								onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 							></div>

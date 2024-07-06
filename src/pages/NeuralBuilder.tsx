@@ -69,7 +69,7 @@ export default function NeuralBuilder() {
 						setEpoch={setEpoch}
 						dataSetName={dataSetName}
 					/>
-					<NeuralNetwork />
+					<NeuralNetwork layers={layers} setLayerIndex={setLayerIndex} />
 				</div>
 				<div className="input-visual-container">
 					<InputData dataSetName={dataSetName} setInput={setInput} dataJSON={dataJSON} />

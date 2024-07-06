@@ -11,9 +11,10 @@ interface DropdownMenuProps {
 	items: any[];
 	defaultSelected?: string;
 	setState?: any;
+	layerState?: any;
 }
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected, setState }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected, setState, layerState }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const dropItems = arrayToDropdownItem(items, label);
 	const [selectedItem, setSelectedItem] = useState<string>(defaultSelected || dropItems[0].value);
@@ -26,12 +27,28 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelect
 		setIsOpen(false);
 	};
 
+	const renderItem = () => {
+		if (layerState) {
+			switch (label) {
+				case "Activation":
+					return layerState.activation;
+					break;
+				case "Regularizer":
+					return layerState.regularizer.regularizer;
+					break;
+				case "Lambda":
+					return layerState.regularizer.lambda;
+					break;
+			}
+		} else return selectedItem;
+	};
+
 	return (
 		<div className="dropdown-container">
 			<label className="dropdown-label">{label}</label>
 			<div className="dropdown">
 				<div className="dropdown-header" onClick={toggleDropdown}>
-					{selectedItem}
+					{renderItem()}
 					<span className={`arrow ${isOpen ? "open" : ""}`}>▼</span>
 				</div>
 				{isOpen && (
