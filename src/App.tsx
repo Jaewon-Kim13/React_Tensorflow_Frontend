@@ -1,7 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
-import Neural from "./pages/Neural";
 import Home from "./pages/Home";
-import NumberNetwork from "./pages/NumberNetwork";
+import NeuralBuilder from "./pages/NeuralBuilder";
 
 function App() {
 	//TODO: add navbar
@@ -10,20 +9,16 @@ function App() {
 			<nav>
 				<ul>
 					<li>
-						<Link to="/neural">Neural Network</Link>
-					</li>
-					<li>
 						<Link to="/home">Home</Link>
 					</li>
 					<li>
-						<Link to="/number-reconizer">Number Reconizer</Link>
+						<Link to="/neural">Home</Link>
 					</li>
 				</ul>
 			</nav>
 			<Routes>
-				<Route path="/neural" element={<Neural />} />
+				<Route path="/neural" element={<NeuralBuilder />} />
 				<Route path="/home" element={<Home />} />
-				<Route path="/number-reconizer" element={<NumberNetwork />} />
 			</Routes>
 		</>
 	);
