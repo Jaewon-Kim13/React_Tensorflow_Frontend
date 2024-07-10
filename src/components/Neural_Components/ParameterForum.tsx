@@ -6,8 +6,7 @@ import {
 	lambdaList,
 	regularizerList,
 	updateLayer,
-	DenseLayer,
-	Conv2DLayer,
+	Layer,
 } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
 
@@ -16,54 +15,40 @@ import { IndexRouteObject } from "react-router";
 
 //Note: I need to add an option for selecting the data set and then fetching the correct dataset form the db and fitting the model to it
 interface Props {
-	isDense: boolean;
-	setIsDense: any;
-	conv2DLayers: Conv2DLayer[];
-	setConv2DLayers: any;
-	denseLayers: DenseLayer[];
-	setDenseLayers: any;
-	denseIndex: number;
-	conv2dIndex: number;
+	layers: Layer[];
+	setLayers: any;
+	layerIndex: number;
 }
 
 //Note: The sigmoid function is used for the two-class logistic regression, whereas the softmax function is used for the multiclass logistic regression
 //Note: onclicking inputlayer set layerindex "-1" onclicking outputlayer set layerindex "-2"
-function ParamaterForum({ isDense, setDenseLayers, setConv2DLayers, denseLayers, conv2DLayers }: Props) {
+function ParamaterForum({ layers, setLayers, layerIndex}: Props) {
+	const handleDropDownChange = () =>{}
+	const getProp = (prop: string) =>{
+		const update: any = layers[layerIndex].layer
+		return update[prop];
+	}
+
+	const handleChange = (prop: string, value: any) => {
+		const layersCopy = [...layers];
+		layersCopy[layerIndex] = updateLayer(layersCopy[layerIndex], prop, value)
+	}
+
 	return (
 		<>
 			<div className="parameter-container">
-				<div className="layer-parameter-container">
-					<div className="unit-input-container">
-						<div>Units</div>
-						<input
-							type="number"
-							value={layers[layerIndex].units}
-							onChange={handleUnitChange}
-							placeholder="Enter units"
-						/>
-					</div>
-					<DropdownMenu
-						defaultSelected={layers[layerIndex].activation}
-						setState={updateActivation}
-						label={"Activation"}
-						items={activationList}
-						layerState={layers[layerIndex]}
+				{layers[layerIndex].type == "Dense" && 
+				<>
+					<div>Units</div>
+					<input
+						type="number"
+						value={getProp('units')}
+						onChange={}
+						placeholder="Enter units"
 					/>
-					<DropdownMenu
-						defaultSelected={layers[layerIndex].regularizer.regularizer}
-						setState={updateRegularizer}
-						label={"Regularizer"}
-						items={regularizerList}
-						layerState={layers[layerIndex]}
-					/>
-					<DropdownMenu
-						defaultSelected={layers[layerIndex].regularizer.lambda}
-						setState={updateLambda}
-						label={"Lambda"}
-						items={lambdaList}
-						layerState={layers[layerIndex]}
-					/>
-				</div>
+				</>
+
+				}
 			</div>
 		</>
 	);

@@ -49,6 +49,18 @@ export interface Conv2DLayer {
 	kernelInitializer: string;
 }
 
+export interface MaxPooling2D {
+	poolSize: number[];
+	strides: number[];
+}
+
+export interface Flatten{}
+
+export interface Layer {
+	type: string;
+	layer: DenseLayer | Conv2DLayer | MaxPooling2D | Flatten //adding any to call properties without errors
+}
+
 //shared constants and functions
 export const activationList = [
 	"elu",
@@ -100,27 +112,54 @@ export function regularizerToFunction(reg: { regularizer: string; lambda: number
 	return regularizerFunction;
 }
 
-const defaultDenseArr = [
-	{ activation: "relu", units: 15, kernelRegularizer: { regularizer: "l1", lambda: 0 } },
-	{ activation: "relu", units: 5, kernelRegularizer: { regularizer: "l1", lambda: 0 } },
-	{ activation: "relu", units: 3, kernelRegularizer: { regularizer: "l1", lambda: 0 } },
-];
-
-const defaultConv2DArr = [
+export const defaultModel: Layer[] = [
 	{
-		kernelSize: 5,
-		filters: 8,
-		strides: 1,
-		activation: "relu",
-		kernelInitializer: "varianceScaling",
-		kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		type: "Conv2D",
+		layer:{
+			kernelSize: 5,
+			filters: 8,
+			strides: 1,
+			activation: 'relu',
+			kernelInitializer: 'varianceScaling',
+			kernelRegularizer: { regularizer: "l1", lambda: 0}
+		}
 	},
 	{
-		kernelSize: 5,
-		filters: 8,
-		strides: 1,
-		activation: "relu",
-		kernelInitializer: "varianceScaling",
-		kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		type: "MaxPooling2D",
+		layer:{
+			poolSize: [2, 2],
+			strides: [2, 2]
+		}
 	},
-];
+	{
+		type: "Conv2D",
+		layer:{
+			kernelSize: 5,
+			filters: 8,
+			strides: 1,
+			activation: 'relu',
+			kernelInitializer: 'varianceScaling',
+			kernelRegularizer: { regularizer: "l1", lambda: 0}
+		}
+	},
+	{
+		type: "MaxPooling2D",
+		layer:{
+			poolSize: [2, 2],
+			strides: [2, 2]
+		}
+	},
+	{
+		type: "Flatten",
+		layer:{}
+	},
+	{
+		type: "Dense", 
+		layer:{
+			activation: "softmax", 
+			units:10, 
+			kernelInitializer: "varianceScaling", 
+			kernelRegularizer: { regularizer: "l1", lambda: 0}
+		}
+	}
+]
