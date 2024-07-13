@@ -12,7 +12,7 @@ function App() {
 						<Link to="/home">Home</Link>
 					</li>
 					<li>
-						<Link to="/neural">Home</Link>
+						<Link to="/neural">Neural</Link>
 					</li>
 				</ul>
 			</nav>

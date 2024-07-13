@@ -38,14 +38,14 @@ So, there is no one-size-fits-all optimizer that works best for every problem, a
 export interface DenseLayer {
 	activation: string;
 	units: number;
-	kernelRegularizer: { funct: string; lambda: number } | any;
+	kernelRegularizer: { name: string; lambda: number } | any;
 }
 export interface Conv2DLayer {
 	kernelSize: number; //window size, so if 5, then the window is 5x5
 	filters: number; //the number of kernelSize windows that is applied to the data
 	strides: number; //the step size of window!
 	activation: string;
-	kernelRegularizer: { regularizer: string; lambda: number } | any;
+	kernelRegularizer: { name: string; lambda: number } | any;
 	kernelInitializer: string;
 }
 
@@ -54,11 +54,11 @@ export interface MaxPooling2D {
 	strides: number[];
 }
 
-export interface Flatten{}
+export interface Flatten {}
 
 export interface Layer {
 	type: string;
-	layer: DenseLayer | Conv2DLayer | MaxPooling2D | Flatten //adding any to call properties without errors
+	layer: DenseLayer | Conv2DLayer | MaxPooling2D | Flatten; //adding any to call properties without errors
 }
 
 //shared constants and functions
@@ -82,10 +82,11 @@ export const activationList = [
 export const regularizerList = ["l1", "l2", "l1l2"];
 export const lambdaList = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3];
 
-export function updateLayer(layer: DenseLayer | Conv2DLayer, prop: string, value: any) {
+type LayerType = DenseLayer | Conv2DLayer | MaxPooling2D | Flatten;
+export function updateLayer<T extends LayerType>(layer: T, prop: string, value: any) {
 	const copy = { ...layer };
-	copy[prop as keyof (DenseLayer | Conv2DLayer)] = value;
-	return copy;
+	(copy as any)[prop] = value;
+	return copy as T;
 }
 
 export function convertLayer(layer: DenseLayer | Conv2DLayer) {
@@ -114,52 +115,61 @@ export function regularizerToFunction(reg: { regularizer: string; lambda: number
 
 export const defaultModel: Layer[] = [
 	{
-		type: "Conv2D",
-		layer:{
-			kernelSize: 5,
-			filters: 8,
-			strides: 1,
-			activation: 'relu',
-			kernelInitializer: 'varianceScaling',
-			kernelRegularizer: { regularizer: "l1", lambda: 0}
-		}
-	},
-	{
-		type: "MaxPooling2D",
-		layer:{
-			poolSize: [2, 2],
-			strides: [2, 2]
-		}
+		type: "Dense",
+		layer: {
+			activation: "softmax",
+			units: 10,
+			kernelInitializer: "varianceScaling",
+			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		},
 	},
 	{
 		type: "Conv2D",
-		layer:{
+		layer: {
 			kernelSize: 5,
 			filters: 8,
 			strides: 1,
-			activation: 'relu',
-			kernelInitializer: 'varianceScaling',
-			kernelRegularizer: { regularizer: "l1", lambda: 0}
-		}
+			activation: "relu",
+			kernelInitializer: "varianceScaling",
+			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		},
 	},
 	{
 		type: "MaxPooling2D",
-		layer:{
+		layer: {
 			poolSize: [2, 2],
-			strides: [2, 2]
-		}
+			strides: [2, 2],
+		},
+	},
+	{
+		type: "Conv2D",
+		layer: {
+			kernelSize: 5,
+			filters: 8,
+			strides: 1,
+			activation: "relu",
+			kernelInitializer: "varianceScaling",
+			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		},
+	},
+	{
+		type: "MaxPooling2D",
+		layer: {
+			poolSize: [2, 2],
+			strides: [2, 2],
+		},
 	},
 	{
 		type: "Flatten",
-		layer:{}
+		layer: {},
 	},
 	{
-		type: "Dense", 
-		layer:{
-			activation: "softmax", 
-			units:10, 
-			kernelInitializer: "varianceScaling", 
-			kernelRegularizer: { regularizer: "l1", lambda: 0}
-		}
-	}
-]
+		type: "Dense",
+		layer: {
+			activation: "softmax",
+			units: 10,
+			kernelInitializer: "varianceScaling",
+			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+		},
+	},
+];

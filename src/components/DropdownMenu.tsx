@@ -1,57 +1,41 @@
 import React, { useState } from "react";
 import "./DropdownMenu.css";
+import { updateLayer } from "../scripts/NeuralScripts";
 
 export interface DropdownItem {
 	label: string;
-	value: string;
+	value: any;
 }
 
-interface DropdownMenuProps {
+interface Props {
 	label: string;
 	items: any[];
-	defaultSelected?: string;
-	setState?: any;
-	layerState?: any;
+	setState: any;
+	state: any;
 }
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ label, items, defaultSelected, setState, layerState }) => {
+const DropdownMenu = ({ label, items, setState, state }: Props) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const dropItems = arrayToDropdownItem(items, label);
-	const [selectedItem, setSelectedItem] = useState<string>(defaultSelected || dropItems[0].value);
 
 	const toggleDropdown = (): void => setIsOpen(!isOpen);
 
-	const handleItemClick = (item: string): void => {
-		setSelectedItem(item);
+	const handleOnClick = (item: any) => {
+		toggleDropdown();
 		setState(item);
-		setIsOpen(false);
 	};
-
-	const renderItem = () => {
-		if (layerState) {
-			switch (label) {
-				case "Activation":
-					return layerState.activation;
-				case "Regularizer":
-					return layerState.regularizer.regularizer;
-				case "Lambda":
-					return layerState.regularizer.lambda;
-			}
-		} else return selectedItem;
-	};
-
 	return (
 		<div className="dropdown-container">
 			<label className="dropdown-label">{label}</label>
 			<div className="dropdown">
 				<div className="dropdown-header" onClick={toggleDropdown}>
-					{renderItem()}
+					{state}
 					<span className={`arrow ${isOpen ? "open" : ""}`}>▼</span>
 				</div>
 				{isOpen && (
 					<ul className="dropdown-list">
-						{dropItems.map((item) => (
-							<li key={item.label} onClick={() => handleItemClick(item.value)}>
+						{dropItems.map((item, index) => (
+							<li key={item.label} onClick={() => handleOnClick(item.value)}>
 								{item.value}
 							</li>
 						))}

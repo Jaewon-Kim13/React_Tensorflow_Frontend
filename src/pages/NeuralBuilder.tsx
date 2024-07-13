@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { DenseLayer, Conv2DLayer, Layer, defaultModel } from "../scripts/NeuralScripts";
-import "./NeuralBuilder.css";
+//import "./NeuralBuilder.css";
 
 import GraphVisualizer from "../components/Neural_Components/GraphVisualizer";
 import ParamaterForum from "../components/Neural_Components/ParameterForum";
+import NeuralVisual from "../components/Neural_Components/NeuralVisual";
 
 export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
@@ -23,11 +24,10 @@ export default function NeuralBuilder() {
 		<>
 			<div className="neural-container">
 				<div className="parameter-network-container">
-					<ParamaterForum
-						layers = {layers}
-						setLayers = {setLayers}
-						layerIndex = {layerIndex}
-					/>
+					<ParamaterForum layers={layers} setLayers={setLayers} layerIndex={layerIndex} />
+					<div>-------------</div>
+					<NeuralVisual layers={layers} setLayerIndex={setLayerIndex} />
+					<div>-------------</div>
 				</div>
 				<div className="input-visual-container">
 					<GraphVisualizer />
