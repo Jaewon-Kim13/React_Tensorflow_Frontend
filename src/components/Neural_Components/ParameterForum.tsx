@@ -106,7 +106,6 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 		setLayers(layersCopy);
 	};
 
-	useEffect(() => {}, [layers]);
 	const getGridSpacing = () => {
 		let num: number = Object.keys(layers[layerIndex].layer).length + 1;
 		let temp: string = "";
@@ -116,6 +115,8 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 		}
 		return temp;
 	};
+
+	useEffect(() => {}, [layers]);
 
 	return (
 		<>
