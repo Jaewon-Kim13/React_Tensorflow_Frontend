@@ -10,9 +10,11 @@ interface Props {
 	cols: number;
 	setGrid: any;
 	grid: any;
+	drawable: boolean;
+	showValues: boolean;
 }
 
-function Canvas({ rows, cols, grid, setGrid }: Props) {
+function Canvas({ rows, cols, grid, setGrid, drawable, showValues }: Props) {
 	// State to hold the grid data, which is a 2D array of numbers (0 or 1)
 	// State to track if the mouse is being dragged
 	const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -53,9 +55,10 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 	// Toggle the state of a cell at (row, col)
 	//rewrite this function to only change cells that equal 0
 	const toggleCell = (row: number, col: number) => {
+		if (!drawable) return;
 		setGrid((prevGrid: any[]) => {
 			const newGrid = prevGrid.map((r: any[], rowIndex: number) =>
-				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? (cell === 0 ? 1 : 1) : cell))
+				r.map((cell: number, colIndex: number) => (rowIndex === row && colIndex === col ? 255 : cell))
 			);
 			return newGrid;
 		});
@@ -68,11 +71,14 @@ function Canvas({ rows, cols, grid, setGrid }: Props) {
 					<div className="row" key={rowIndex}>
 						{row.map((cell: number, colIndex: number) => (
 							<div
-								className={`cell ${cell === 1 ? "highlighted" : ""}`}
+								className="cell"
 								key={colIndex}
+								style={{ backgroundColor: `rgba(0,0,0,${cell / 255})` }}
 								onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
 								onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-							></div>
+							>
+								{showValues && cell}
+							</div>
 						))}
 					</div>
 				))}

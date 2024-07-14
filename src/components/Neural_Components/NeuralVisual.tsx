@@ -14,7 +14,8 @@ function NeuralVisual({ layers, setLayerIndex }: Props) {
 		<>
 			{layers.map((curr, index) => (
 				<div onClick={() => handleLayerChange(index)} key={index}>
-					{`Layer[${index}]:`}
+					<div>------------------------------------------</div>
+					{`Layer[${index}]:${JSON.stringify(curr)}`}
 				</div>
 			))}
 		</>

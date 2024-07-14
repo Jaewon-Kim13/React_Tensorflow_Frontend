@@ -38,14 +38,14 @@ So, there is no one-size-fits-all optimizer that works best for every problem, a
 export interface DenseLayer {
 	activation: string;
 	units: number;
-	kernelRegularizer: { name: string; lambda: number } | any;
+	kernelRegularizer: { regularizer: string; lambda: number } | any;
 }
 export interface Conv2DLayer {
 	kernelSize: number; //window size, so if 5, then the window is 5x5
 	filters: number; //the number of kernelSize windows that is applied to the data
 	strides: number; //the step size of window!
 	activation: string;
-	kernelRegularizer: { name: string; lambda: number } | any;
+	kernelRegularizer: { regularizer: string; lambda: number } | any;
 	kernelInitializer: string;
 }
 
@@ -173,3 +173,27 @@ export const defaultModel: Layer[] = [
 		},
 	},
 ];
+
+export const defaultDense = {
+	activation: "softmax",
+	units: 10,
+	kernelInitializer: "varianceScaling",
+	kernelRegularizer: { regularizer: "l1", lambda: 0 },
+};
+
+export const defaultConv2D = {
+	kernelSize: 5,
+	filters: 8,
+	strides: 1,
+	activation: "relu",
+	kernelInitializer: "varianceScaling",
+	kernelRegularizer: { regularizer: "l1", lambda: 0 },
+};
+
+export const defaultMaxPooling2D = {
+	poolSize: [2, 2],
+	strides: [2, 2],
+};
+
+export const defaultFlatten = {};
+export const layerTypes = ["Flatten", "Dense", "MaxPooling2D", "Conv2D"];
