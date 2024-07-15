@@ -39,6 +39,7 @@ export interface DenseLayer {
 	activation: string;
 	units: number;
 	kernelRegularizer: { regularizer: string; lambda: number } | any;
+	kernelInitializer: string;
 }
 export interface Conv2DLayer {
 	kernelSize: number; //window size, so if 5, then the window is 5x5
@@ -81,6 +82,23 @@ export const activationList = [
 ];
 export const regularizerList = ["l1", "l2", "l1l2"];
 export const lambdaList = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3];
+export const kernelInitializerList = [
+	"constant",
+	"glorotNormal",
+	"glorotUniform",
+	"heNormal",
+	"heUniform",
+	"identity",
+	"leCunNormal",
+	"leCunUniform",
+	"ones",
+	"orthogonal",
+	"randomNormal",
+	"randomUniform",
+	"truncatedNormal",
+	"varianceScaling",
+	"zeros",
+];
 
 type LayerType = DenseLayer | Conv2DLayer | MaxPooling2D | Flatten;
 export function updateLayer<T extends LayerType>(layer: T, prop: string, value: any) {

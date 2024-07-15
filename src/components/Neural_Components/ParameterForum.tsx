@@ -12,6 +12,7 @@ import {
 	defaultFlatten,
 	defaultMaxPooling2D,
 	defaultDense,
+	kernelInitializerList,
 } from "../../scripts/NeuralScripts";
 
 import DropdownMenu from "../DropdownMenu";
@@ -77,6 +78,12 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 		setLayers(layersCopy);
 	};
 
+	const updateInitializer = (item: string) => {
+		const layersCopy = [...layers];
+		layersCopy[layerIndex].layer = updateLayer(layersCopy[layerIndex].layer, "kernelInitializer", item);
+		setLayers(layersCopy);
+	};
+
 	const updateLambda = (item: number) => {
 		const kernelRegularizer = { ...getProp("kernelRegularizer") };
 		kernelRegularizer.lambda = item;
@@ -107,7 +114,7 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 	};
 
 	const getGridSpacing = () => {
-		let num: number = Object.keys(layers[layerIndex].layer).length + 1;
+		let num: number = Object.keys(layers[layerIndex].layer).length + 2;
 		let temp: string = "";
 		let size: number = 100 / num;
 		for (let i = 0; i < num; i++) {
@@ -193,6 +200,12 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 							label={"lambda"}
 							items={lambdaList}
 							state={getProp("kernelRegularizer").lambda}
+						/>
+						<DropdownMenu
+							label={"kernelInitializer"}
+							items={kernelInitializerList}
+							setState={updateInitializer}
+							state={getProp("kernelInitializer")}
 						/>
 					</>
 				)}
