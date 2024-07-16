@@ -39,17 +39,9 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 			event.target.className == "filters" ||
 			event.target.className == "kernalSize"
 		) {
-			layersCopy[layerIndex].layer = updateLayer(
-				layersCopy[layerIndex].layer,
-				event.target.className,
-				Number(event.target.value)
-			);
+			layersCopy[layerIndex].layer = updateLayer(layersCopy[layerIndex].layer, event.target.className, Number(event.target.value));
 		} else {
-			layersCopy[layerIndex].layer = updateLayer(
-				layersCopy[layerIndex].layer,
-				event.target.className,
-				event.target.value
-			);
+			layersCopy[layerIndex].layer = updateLayer(layersCopy[layerIndex].layer, event.target.className, event.target.value);
 		}
 
 		setLayers(layersCopy);
@@ -129,12 +121,7 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 		<>
 			<div className="parameter-container" style={{ display: "grid", gridTemplateColumns: getGridSpacing() }}>
 				<div className="layer-type-selection">
-					<DropdownMenu
-						label="layer-type"
-						items={layerTypes}
-						setState={updateLayerType}
-						state={layers[layerIndex].type}
-					/>
+					<DropdownMenu label="layer-type" items={layerTypes} setState={updateLayerType} state={layers[layerIndex].type} />
 				</div>
 				{layers[layerIndex].type == "Dense" && (
 					<>
@@ -148,59 +135,28 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 					<>
 						<div className="input-container">
 							<div>kernalSize</div>
-							<input
-								type="range"
-								className="kernelSize"
-								min="1"
-								max="10"
-								onChange={handleChange}
-								value={getProp("kernelSize")}
-							/>
+							<input type="range" className="kernelSize" min="1" max="10" onChange={handleChange} value={getProp("kernelSize")} />
 						</div>
 						<div className="input-container">
 							<div>filters</div>
-							<input
-								type="range"
-								className="filters"
-								min="1"
-								max="10"
-								onChange={handleChange}
-								value={getProp("filters")}
-							/>
+							<input type="range" className="filters" min="1" max="10" onChange={handleChange} value={getProp("filters")} />
 						</div>
 						<div className="input-container">
 							<div>strides</div>
-							<input
-								type="range"
-								className="strides"
-								min="1"
-								max="10"
-								onChange={handleChange}
-								value={getProp("strides")}
-							/>
+							<input type="range" className="strides" min="1" max="10" onChange={handleChange} value={getProp("strides")} />
 						</div>
 					</>
 				)}
 				{(layers[layerIndex].type == "Dense" || layers[layerIndex].type == "Conv2D") && (
 					<>
-						<DropdownMenu
-							setState={updateActivation}
-							label={"activation"}
-							items={activationList}
-							state={getProp("activation")}
-						/>
+						<DropdownMenu setState={updateActivation} label={"activation"} items={activationList} state={getProp("activation")} />
 						<DropdownMenu
 							setState={updateRegularizer}
 							label={"regularizer"}
 							items={regularizerList}
 							state={getProp("kernelRegularizer").regularizer}
 						/>
-						<DropdownMenu
-							setState={updateLambda}
-							label={"lambda"}
-							items={lambdaList}
-							state={getProp("kernelRegularizer").lambda}
-						/>
+						<DropdownMenu setState={updateLambda} label={"lambda"} items={lambdaList} state={getProp("kernelRegularizer").lambda} />
 						<DropdownMenu
 							label={"kernelInitializer"}
 							items={kernelInitializerList}
@@ -213,25 +169,11 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 					<>
 						<div className="input-container">
 							<div>Pool Size</div>
-							<input
-								type="range"
-								className="poolSize"
-								min="1"
-								max="10"
-								onChange={handleMaxPoolChange}
-								value={getProp("poolSize")[0]}
-							/>
+							<input type="range" className="poolSize" min="1" max="10" onChange={handleMaxPoolChange} value={getProp("poolSize")[0]} />
 						</div>
 						<div className="input-container">
 							<div>Strides</div>
-							<input
-								type="range"
-								className="strides"
-								min="1"
-								max="10"
-								onChange={handleMaxPoolChange}
-								value={getProp("strides")[0]}
-							/>
+							<input type="range" className="strides" min="1" max="10" onChange={handleMaxPoolChange} value={getProp("strides")[0]} />
 						</div>
 					</>
 				)}

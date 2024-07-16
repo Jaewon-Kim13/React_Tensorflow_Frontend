@@ -35,6 +35,15 @@ Adam can also be sensitive to the choice of hyperparameters. It is important to 
 So, there is no one-size-fits-all optimizer that works best for every problem, and Adam is no exception.
 */
 
+export interface CompilerSettings {
+	epochs: number;
+	batchSize: number;
+	ratio: number;
+	noise: number;
+	shuffle: boolean;
+	optimizer: { name: string; learningRate: number };
+}
+
 export interface DenseLayer {
 	activation: string;
 	units: number;
@@ -99,6 +108,8 @@ export const kernelInitializerList = [
 	"varianceScaling",
 	"zeros",
 ];
+
+export const optimizerList = ["sdg", "adam"];
 
 type LayerType = DenseLayer | Conv2DLayer | MaxPooling2D | Flatten;
 export function updateLayer<T extends LayerType>(layer: T, prop: string, value: any) {
@@ -215,3 +226,11 @@ export const defaultMaxPooling2D = {
 
 export const defaultFlatten = {};
 export const layerTypes = ["Flatten", "Dense", "MaxPooling2D", "Conv2D"];
+export const defaultCompilerSetttings = {
+	epochs: 10,
+	batchSize: 32,
+	ratio: 10,
+	noise: 10,
+	shuffle: true,
+	optimizer: { name: "adam", learningRate: 1 },
+};
