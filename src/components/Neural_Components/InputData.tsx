@@ -8,9 +8,10 @@ interface Props {
 	compilerSettings: CompilerSettings;
 	setCompilerSettings: any;
 	layers: Layer[];
+	setLayers: any;
 }
 
-export default function InputData({ setCompilerSettings, compilerSettings, layers }: Props) {
+export default function InputData({ setCompilerSettings, compilerSettings, layers, setLayers }: Props) {
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const compilerCopy = { ...compilerSettings };
 		switch (event.target.className) {
@@ -44,12 +45,12 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				<div className="range-container">
 					<div>{`Ratio of training to test data: ${compilerSettings.ratio}%`}</div>
 					<input type="range" className="ratio" min="10" max="90" onChange={handleChange} value={compilerSettings.ratio} />
-					<div>{`Batch Size: ${compilerSettings.batchSize}`}</div>
-					<input type="range" className="batch" min="1" max="32" onChange={handleChange} value={compilerSettings.batchSize} />
+					<div>{`Batch Size: ${Math.pow(2, compilerSettings.batchSize)}`}</div>
+					<input type="range" className="batch" min="1" max="10" onChange={handleChange} value={compilerSettings.batchSize} />
 					<div>{`Noise: ${compilerSettings.noise / 100}`}</div>
 					<input type="range" className="noise" min="0" max="100" onChange={handleChange} value={compilerSettings.noise} />
 					<div>{`Epochs: ${compilerSettings.epochs}`}</div>
-					<input type="range" className="epochs" min="1" max="100" onChange={handleChange} value={compilerSettings.epochs} />
+					<input type="range" className="epochs" min="1" max="10" onChange={handleChange} value={compilerSettings.epochs} />
 				</div>
 				<div className="optimizer-container">
 					<DropdownMenu label="Optimizer" items={optimizerList} setState={updateOptimizerName} state={compilerSettings.optimizer.name} />
@@ -59,7 +60,6 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 					</div>
 				</div>
 			</div>
-			<div>{`Compiler Setting Test: ${JSON.stringify(compilerSettings)}`}</div>
 		</>
 	);
 }

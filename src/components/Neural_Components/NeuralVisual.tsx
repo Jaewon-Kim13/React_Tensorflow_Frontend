@@ -5,10 +5,12 @@ import "./NeuralVisual.css";
 
 interface Props {
 	layers: Layer[];
+	layerIndex: number;
 	setLayerIndex: any;
+	setLayers: any;
 }
 
-function NeuralVisual({ layers, setLayerIndex }: Props) {
+function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex }: Props) {
 	const handleLayerChange = (index: number) => {
 		setLayerIndex(index);
 	};
@@ -18,7 +20,7 @@ function NeuralVisual({ layers, setLayerIndex }: Props) {
 		let jsxArray = [];
 
 		for (let i = 0; i < divNum; i++) {
-			jsxArray.push(<div>{`Unit: ${i}`}</div>);
+			jsxArray.push(<div className="neuron">{`Unit: ${i}`}</div>);
 		}
 
 		return jsxArray;
@@ -29,34 +31,49 @@ function NeuralVisual({ layers, setLayerIndex }: Props) {
 		let jsxArray = [];
 
 		for (let i = 0; i < divNum; i++) {
-			jsxArray.push(<div>{`Filter: ${i}`}</div>);
+			jsxArray.push(<div className="neuron">{`Filter: ${i}`}</div>);
 		}
 
 		return jsxArray;
 	};
 
-	const getGridSpacing = () => {
-		let num: number = layers.length;
-		let temp: string = "";
-		let size: number = 100 / num;
-		for (let i = 0; i < num; i++) {
-			temp += size + "% ";
+	const handleLayerSize = (event: any) => {
+		const copy = [...layers];
+		if (event.target.className == "increase" && layers.length < 11) {
+			copy.push({ type: "Flatten", layer: {} });
+			setLayers(copy);
+		} else if (event.target.className == "decrease" && layers.length > 1) {
+			if (layerIndex > layers.length - 2) setLayerIndex(layerIndex - 1);
+			copy.pop();
+			setLayers(copy);
 		}
-		return temp;
 	};
 
 	return (
 		<>
-			<div className="Network" style={{ display: "grid", gridTemplateColumns: getGridSpacing() }}>
-				{layers.map((curr, index) => (
-					<div onClick={() => handleLayerChange(index)} key={index} className="layer">
-						<div>{`Layer Type: ${curr.type}`}</div>
-						{curr.type == "Dense" && denseBuilder(curr).map((curr) => curr)}
-						{curr.type == "Conv2D" && conv2DBulder(curr).map((curr) => curr)}
-						{curr.type == "Flatten" && <div>Flatten Layer</div>}
-						{curr.type == "MaxPooling2D" && <div>MaxPooling2D Layer</div>}
-					</div>
-				))}
+			<div className="Network-container">
+				<div className="layer-update">
+					<button className="decrease" onClick={handleLayerSize}>
+						-
+					</button>
+					Layers
+					<button className="increase" onClick={handleLayerSize}>
+						+
+					</button>
+				</div>
+				<div className="Network">
+					{layers.map((curr, index) => (
+						<>
+							<div className="layer" onClick={() => handleLayerChange(index)}>
+								<div className="layer-title">{`${curr.type}`.padEnd(12, "x")}</div>
+								<div key={index} className={curr.type}>
+									{curr.type == "Dense" && denseBuilder(curr).map((curr) => curr)}
+									{curr.type == "Conv2D" && conv2DBulder(curr).map((curr) => curr)}
+								</div>
+							</div>
+						</>
+					))}
+				</div>
 			</div>
 		</>
 	);

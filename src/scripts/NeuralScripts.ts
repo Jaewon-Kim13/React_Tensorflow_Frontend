@@ -92,7 +92,6 @@ export const activationList = [
 export const regularizerList = ["l1", "l2", "l1l2"];
 export const lambdaList = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3];
 export const kernelInitializerList = [
-	"constant",
 	"glorotNormal",
 	"glorotUniform",
 	"heNormal",
@@ -109,7 +108,7 @@ export const kernelInitializerList = [
 	"zeros",
 ];
 
-export const optimizerList = ["sdg", "adam"];
+export const optimizerList = ["sgd", "adam"];
 
 type LayerType = DenseLayer | Conv2DLayer | MaxPooling2D | Flatten;
 export function updateLayer<T extends LayerType>(layer: T, prop: string, value: any) {
@@ -144,15 +143,6 @@ export function regularizerToFunction(reg: { regularizer: string; lambda: number
 
 export const defaultModel: Layer[] = [
 	{
-		type: "Dense",
-		layer: {
-			activation: "softmax",
-			units: 10,
-			kernelInitializer: "varianceScaling",
-			kernelRegularizer: { regularizer: "l1", lambda: 0 },
-		},
-	},
-	{
 		type: "Conv2D",
 		layer: {
 			kernelSize: 5,
@@ -160,7 +150,7 @@ export const defaultModel: Layer[] = [
 			strides: 1,
 			activation: "relu",
 			kernelInitializer: "varianceScaling",
-			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+			kernelRegularizer: { regularizer: "l1", lambda: 0.01 },
 		},
 	},
 	{
@@ -174,11 +164,11 @@ export const defaultModel: Layer[] = [
 		type: "Conv2D",
 		layer: {
 			kernelSize: 5,
-			filters: 8,
+			filters: 16,
 			strides: 1,
 			activation: "relu",
 			kernelInitializer: "varianceScaling",
-			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+			kernelRegularizer: { regularizer: "l1", lambda: 0.01 },
 		},
 	},
 	{
@@ -197,8 +187,8 @@ export const defaultModel: Layer[] = [
 		layer: {
 			activation: "softmax",
 			units: 10,
-			kernelInitializer: "varianceScaling",
-			kernelRegularizer: { regularizer: "l1", lambda: 0 },
+			kernelInitializer: "zeros",
+			kernelRegularizer: { regularizer: "l1", lambda: 0.1 },
 		},
 	},
 ];
@@ -207,7 +197,7 @@ export const defaultDense = {
 	activation: "softmax",
 	units: 10,
 	kernelInitializer: "varianceScaling",
-	kernelRegularizer: { regularizer: "l1", lambda: 0 },
+	kernelRegularizer: { regularizer: "l1", lambda: 0.1 },
 };
 
 export const defaultConv2D = {
@@ -216,7 +206,7 @@ export const defaultConv2D = {
 	strides: 1,
 	activation: "relu",
 	kernelInitializer: "varianceScaling",
-	kernelRegularizer: { regularizer: "l1", lambda: 0 },
+	kernelRegularizer: { regularizer: "l1", lambda: 0.1 },
 };
 
 export const defaultMaxPooling2D = {
@@ -228,7 +218,7 @@ export const defaultFlatten = {};
 export const layerTypes = ["Flatten", "Dense", "MaxPooling2D", "Conv2D"];
 export const defaultCompilerSetttings = {
 	epochs: 10,
-	batchSize: 32,
+	batchSize: 9,
 	ratio: 10,
 	noise: 10,
 	shuffle: true,

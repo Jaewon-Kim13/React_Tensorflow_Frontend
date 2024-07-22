@@ -37,7 +37,7 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 			event.target.className == "strides" ||
 			event.target.className == "units" ||
 			event.target.className == "filters" ||
-			event.target.className == "kernalSize"
+			event.target.className == "kernelSize"
 		) {
 			layersCopy[layerIndex].layer = updateLayer(layersCopy[layerIndex].layer, event.target.className, Number(event.target.value));
 		} else {
@@ -121,12 +121,12 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 		<>
 			<div className="parameter-container" style={{ display: "grid", gridTemplateColumns: getGridSpacing() }}>
 				<div className="layer-type-selection">
-					<DropdownMenu label="layer-type" items={layerTypes} setState={updateLayerType} state={layers[layerIndex].type} />
+					<DropdownMenu label="Layer-type" items={layerTypes} setState={updateLayerType} state={layers[layerIndex].type} />
 				</div>
 				{layers[layerIndex].type == "Dense" && (
 					<>
 						<div className="input-container">
-							<div>Units</div>
+							<div>{`Units: ${getProp("units")}`}</div>
 							<input type="range" className="units" min="1" max="10" onChange={handleChange} value={getProp("units")} />
 						</div>
 					</>
@@ -134,31 +134,31 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 				{layers[layerIndex].type == "Conv2D" && (
 					<>
 						<div className="input-container">
-							<div>kernalSize</div>
+							<div>{`Kernel Size: ${getProp("kernelSize") + "x" + getProp("kernelSize")}`}</div>
 							<input type="range" className="kernelSize" min="1" max="10" onChange={handleChange} value={getProp("kernelSize")} />
 						</div>
 						<div className="input-container">
-							<div>filters</div>
-							<input type="range" className="filters" min="1" max="10" onChange={handleChange} value={getProp("filters")} />
+							<div>{`Filters: ${getProp("filters")}`}</div>
+							<input type="range" className="filters" min="1" max="20" onChange={handleChange} value={getProp("filters")} />
 						</div>
 						<div className="input-container">
-							<div>strides</div>
+							<div>{`Strides: ${getProp("strides")}`}</div>
 							<input type="range" className="strides" min="1" max="10" onChange={handleChange} value={getProp("strides")} />
 						</div>
 					</>
 				)}
 				{(layers[layerIndex].type == "Dense" || layers[layerIndex].type == "Conv2D") && (
 					<>
-						<DropdownMenu setState={updateActivation} label={"activation"} items={activationList} state={getProp("activation")} />
+						<DropdownMenu setState={updateActivation} label={"Activation"} items={activationList} state={getProp("activation")} />
 						<DropdownMenu
 							setState={updateRegularizer}
-							label={"regularizer"}
+							label={"Regularizer"}
 							items={regularizerList}
 							state={getProp("kernelRegularizer").regularizer}
 						/>
-						<DropdownMenu setState={updateLambda} label={"lambda"} items={lambdaList} state={getProp("kernelRegularizer").lambda} />
+						<DropdownMenu setState={updateLambda} label={"Lambda"} items={lambdaList} state={getProp("kernelRegularizer").lambda} />
 						<DropdownMenu
-							label={"kernelInitializer"}
+							label={"Kernel Initializer"}
 							items={kernelInitializerList}
 							setState={updateInitializer}
 							state={getProp("kernelInitializer")}
@@ -168,11 +168,11 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 				{layers[layerIndex].type == "MaxPooling2D" && (
 					<>
 						<div className="input-container">
-							<div>Pool Size</div>
+							<div>{`Pool Size: [${getProp("poolSize")}]`}</div>
 							<input type="range" className="poolSize" min="1" max="10" onChange={handleMaxPoolChange} value={getProp("poolSize")[0]} />
 						</div>
 						<div className="input-container">
-							<div>Strides</div>
+							<div>{`Strides: [${getProp("strides")}]`}</div>
 							<input type="range" className="strides" min="1" max="10" onChange={handleMaxPoolChange} value={getProp("strides")[0]} />
 						</div>
 					</>
@@ -183,7 +183,6 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 					</>
 				)}
 			</div>
-			<div>{JSON.stringify(layers[layerIndex])}</div>
 		</>
 	);
 }

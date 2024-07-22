@@ -1,3 +1,56 @@
+.Network{
+    border-style: solid;
+    border-color: black;
+    border-radius: 25px;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+}
+
 .Network > *{
+    border-style: solid;
     border-color: red;
+    border-radius: 25px;
+    overflow: hidden;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.Dense{
+    background-color: rgb(226, 240, 31);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.Flatten{
+    background-color: rgb(112, 74, 28);
+}
+
+.MaxPooling2D{
+    background-color: rgb(0, 248, 33);
+}
+
+.Conv2D{
+    background-color: rgb(167, 128, 194);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.neuron {
+    text-align: center;
+    vertical-align: middle;
+    width: 16.5%;
+    height: 6%;
+    margin: 5% 5% 5% 5%;
+    padding: 2% 2% 2% 2%;
+    background-color: rgb(207, 131, 30);
 }

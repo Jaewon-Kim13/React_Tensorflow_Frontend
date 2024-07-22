@@ -1,11 +1,11 @@
 .dropdown-container {
     font-family: Arial, sans-serif;
-    width: 200px;
+    width: 60%;
   }
   
   .dropdown-label {
     display: block;
-    font-size: 14px;
+    font-size: 90%;
     color: #673ab7;
     margin-bottom: 4px;
   }
@@ -22,10 +22,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    overflow: hidden;
   }
   
   .arrow {
-    font-size: 12px;
+    font-size: 80%;
     transition: transform 0.3s;
   }
   
@@ -45,6 +46,7 @@
     padding: 0;
     margin: 0;
     z-index: 1;
+    overflow: hidden;
   }
   
   .dropdown-list li {
