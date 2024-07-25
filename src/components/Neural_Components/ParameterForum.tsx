@@ -143,7 +143,7 @@ function ParamaterForum({ layers, setLayers, layerIndex }: Props) {
 						</div>
 						<div className="input-container">
 							<div>{`Strides: ${getProp("strides")}`}</div>
-							<input type="range" className="strides" min="1" max="10" onChange={handleChange} value={getProp("strides")} />
+							<input type="range" className="strides" min="1" max="2" onChange={handleChange} value={getProp("strides")} />
 						</div>
 					</>
 				)}

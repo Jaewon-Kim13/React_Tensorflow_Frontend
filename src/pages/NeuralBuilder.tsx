@@ -8,6 +8,7 @@ import ParamaterForum from "../components/Neural_Components/ParameterForum";
 import NeuralVisual from "../components/Neural_Components/NeuralVisual";
 import InputData from "../components/Neural_Components/InputData";
 import axios from "axios";
+import { createLineGraph, HistoryData } from "../scripts/D3Scripts";
 
 export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
@@ -25,7 +26,20 @@ export default function NeuralBuilder() {
 		axios
 			.post("http://localhost:8804/compile", data)
 			.then((response) => {
-				setResults(JSON.stringify(response.data));
+				setResults(response.data);
+				const formattedData: HistoryData = {
+					epoch: response.data.history.epoch,
+					history: {
+						val_loss: response.data.history.history.val_loss,
+						val_acc: response.data.history.history.val_acc,
+						loss: response.data.history.history.loss,
+						acc: response.data.history.history.acc,
+					},
+				};
+				console.log(history);
+
+				createLineGraph(formattedData, "#accuracy-chart", "accuracy");
+				createLineGraph(formattedData, "#loss-chart", "loss");
 			})
 			.catch((error) => {
 				console.log("ERROR: " + error);
@@ -55,7 +69,9 @@ export default function NeuralBuilder() {
 					>
 						COMPILE
 					</button>
-					<div>{results}</div>
+					<div>{JSON.stringify(results)}</div>
+					<div id="accuracy-chart"></div>
+					<div id="loss-chart"></div>
 				</div>
 			</div>
 		</>
