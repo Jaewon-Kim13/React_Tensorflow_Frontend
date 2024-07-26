@@ -3,15 +3,17 @@ import Canvas from "../Canvas";
 import { div, Optimizer } from "@tensorflow/tfjs";
 import { CompilerSettings, Layer, optimizerList } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
+import axios from "axios";
+import { createLineGraph, HistoryData } from "../../scripts/D3Scripts";
 
 interface Props {
 	compilerSettings: CompilerSettings;
 	setCompilerSettings: any;
 	layers: Layer[];
-	setLayers: any;
+	setResult: any;
 }
 
-export default function InputData({ setCompilerSettings, compilerSettings, layers, setLayers }: Props) {
+export default function InputData({ setCompilerSettings, compilerSettings, layers, setResult }: Props) {
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const compilerCopy = { ...compilerSettings };
 		switch (event.target.className) {
@@ -31,6 +33,37 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				compilerCopy.optimizer.learningRate = Number(event.target.value);
 		}
 		setCompilerSettings(compilerCopy);
+	};
+
+	const compile = async (layers: Layer[], compilerSettings: CompilerSettings) => {
+		const data = { layers: layers, compilerSettings: compilerSettings };
+		axios
+			.post("http://localhost:8804/compile", data)
+			.then((response) => {
+				const acc = response.data.history.history.acc;
+				const valAcc = response.data.history.history.val_acc;
+
+				const loss = response.data.history.history.loss;
+				const valLoss = response.data.history.history.val_loss;
+
+				setResult({ acc: acc[acc.length - 1], val_acc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], val_loss: [valLoss.length - 1] });
+				const formattedData: HistoryData = {
+					epoch: response.data.history.epoch,
+					history: {
+						val_loss: response.data.history.history.val_loss,
+						val_acc: response.data.history.history.val_acc,
+						loss: response.data.history.history.loss,
+						acc: response.data.history.history.acc,
+					},
+				};
+				console.log(history);
+
+				createLineGraph(formattedData, "#accuracy-chart", "accuracy");
+				createLineGraph(formattedData, "#loss-chart", "loss");
+			})
+			.catch((error) => {
+				console.log("ERROR: " + error);
+			});
 	};
 
 	const updateOptimizerName = (item: string) => {
@@ -59,6 +92,13 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 						<input type="range" className="learning" min="1" max="100" onChange={handleChange} value={compilerSettings.optimizer.learningRate} />
 					</div>
 				</div>
+				<button
+					onClick={() => {
+						compile(layers, compilerSettings);
+					}}
+				>
+					COMPILE
+				</button>
 			</div>
 		</>
 	);

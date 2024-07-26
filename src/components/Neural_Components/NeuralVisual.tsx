@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { Layer } from "../../scripts/NeuralScripts";
 import { RotateWithOffset } from "@tensorflow/tfjs";
-import "./NeuralVisual.css";
+import "./css/NeuralVisual.css";
 
 interface Props {
 	layers: Layer[];

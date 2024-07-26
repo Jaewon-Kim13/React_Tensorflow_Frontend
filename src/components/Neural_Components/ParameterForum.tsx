@@ -17,7 +17,7 @@ import {
 
 import DropdownMenu from "../DropdownMenu";
 
-import "./ParameterForum.css";
+import "./css/ParameterForum.css";
 
 interface Props {
 	layers: Layer[];
