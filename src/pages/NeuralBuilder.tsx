@@ -30,9 +30,17 @@ export default function NeuralBuilder() {
 				<div className="Network-Compiler-Conatainer">
 					<InputData compilerSettings={compilerSettings} setCompilerSettings={setCompilerSettings} layers={layers} setResult={setResult} />
 					<NeuralVisual layers={layers} setLayerIndex={setLayerIndex} setLayers={setLayers} layerIndex={layerIndex} />
-					<div className="graphs">
+					<div className="compile-data">
 						<div id="accuracy-chart"></div>
 						<div id="loss-chart"></div>
+						<div className="final-results">
+							<div>
+								Training set: accuracy: {(result.acc * 100).toFixed(2)}% loss: {result.loss.toFixed(2)}
+							</div>
+							<div>
+								Validation set: accuracy: {(result.valAcc * 100).toFixed(2)}% loss: {result.valLoss.toFixed(2)}
+							</div>
+						</div>
 					</div>
 				</div>
 				<div className="input-visual-container">

@@ -46,7 +46,7 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				const loss = response.data.history.history.loss;
 				const valLoss = response.data.history.history.val_loss;
 
-				setResult({ acc: acc[acc.length - 1], val_acc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], val_loss: [valLoss.length - 1] });
+				setResult({ acc: acc[acc.length - 1], valAcc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], valLoss: valLoss[valLoss.length - 1] });
 				const formattedData: HistoryData = {
 					epoch: response.data.history.epoch,
 					history: {
