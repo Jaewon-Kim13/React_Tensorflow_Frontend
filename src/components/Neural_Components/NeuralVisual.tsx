@@ -10,11 +10,14 @@ interface Props {
 	layerIndex: number;
 	setLayerIndex: any;
 	setLayers: any;
+	untrainedWeights: any;
+	trainedWeights: any;
 }
 
-function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex }: Props) {
+function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWeights, untrainedWeights }: Props) {
 	const [modelList, setModelList] = useState<string[]>(["Error Fetching Models", "Test"]);
 	const [modelName, setModelName] = useState<string>(modelList[0]);
+	const [toggleWeights, setToggleWeights] = useState<boolean>(false);
 
 	const handleLayerChange = (index: number) => {
 		setLayerIndex(index);
@@ -70,7 +73,25 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex }: Props) {
 					<div className="select-model">
 						<DropdownMenu label="Model-name" items={modelList} setState={setModelName} state={modelName} />
 					</div>
+					<div
+						onClick={() => {
+							setToggleWeights(!toggleWeights);
+						}}
+					>
+						Veiw Weights
+					</div>
 				</div>
+				{toggleWeights && trainedWeights != null && (
+					<>
+						{layers.map((curr, index) => {
+							if (curr.type == "Conv2D" || curr.type == "MaxPooling2D") return <div className="no-weights" />;
+							if (curr.type == "Conv2D") {
+							} else {
+								return <div className="dense-weights">{trainedWeights[index]}</div>;
+							}
+						})}
+					</>
+				)}
 				<div className="Network">
 					{layers.map((curr, index) => (
 						<>

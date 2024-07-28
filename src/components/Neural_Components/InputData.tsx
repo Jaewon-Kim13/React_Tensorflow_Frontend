@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import Canvas from "../Canvas";
-import { div, Optimizer } from "@tensorflow/tfjs";
+import { conv2dTranspose, div, Optimizer } from "@tensorflow/tfjs";
 import { CompilerSettings, Layer, optimizerList } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
 import axios from "axios";
@@ -42,6 +42,7 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 		axios
 			.post("http://localhost:8804/compile", data)
 			.then((response) => {
+				console.log(response.data);
 				const acc = response.data.history.history.acc;
 				const valAcc = response.data.history.history.val_acc;
 

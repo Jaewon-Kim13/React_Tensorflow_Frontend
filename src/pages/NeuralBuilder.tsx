@@ -14,8 +14,8 @@ export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
 	const [defaultModels, setDefaultModels] = useState<any>();
 	const [model, setModel] = useState<any>(null);
-	const [untrainedWeights, setUntrainedWeights] = useState<any>([[0]]);
-	const [trainedWeights, setTrainedWeights] = useState<any>([[0]]);
+	const [untrainedWeights, setUntrainedWeights] = useState<any>(null);
+	const [trainedWeights, setTrainedWeights] = useState<any>(null);
 
 	const [result, setResult] = useState<any>({ acc: 0, loss: 0, valAcc: 0, valLoss: 0 });
 	const [compilerSettings, setCompilerSettings] = useState<CompilerSettings>(defaultCompilerSetttings);
@@ -37,7 +37,14 @@ export default function NeuralBuilder() {
 						setUntrainedWeights={setUntrainedWeights}
 						setTrainedWeights={setUntrainedWeights}
 					/>
-					<NeuralVisual layers={layers} setLayerIndex={setLayerIndex} setLayers={setLayers} layerIndex={layerIndex} />
+					<NeuralVisual
+						layers={layers}
+						setLayerIndex={setLayerIndex}
+						setLayers={setLayers}
+						layerIndex={layerIndex}
+						untrainedWeights={untrainedWeights}
+						trainedWeights={trainedWeights}
+					/>
 					<div className="compile-data">
 						<div id="accuracy-chart"></div>
 						<div id="loss-chart"></div>
