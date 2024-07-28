@@ -14,9 +14,10 @@ export default function NeuralBuilder() {
 	const [userModels, setUserModels] = useState<any>();
 	const [defaultModels, setDefaultModels] = useState<any>();
 	const [model, setModel] = useState<any>(null);
+	const [untrainedWeights, setUntrainedWeights] = useState<any>([[0]]);
+	const [trainedWeights, setTrainedWeights] = useState<any>([[0]]);
 
-	const [result, setResult] = useState<any>("Compile to see results!");
-
+	const [result, setResult] = useState<any>({ acc: 0, loss: 0, valAcc: 0, valLoss: 0 });
 	const [compilerSettings, setCompilerSettings] = useState<CompilerSettings>(defaultCompilerSetttings);
 	const [layers, setLayers] = useState<Layer[]>(defaultModel);
 	const [layerIndex, setLayerIndex] = useState<number>(0);
@@ -28,7 +29,14 @@ export default function NeuralBuilder() {
 					<ParamaterForum layers={layers} setLayers={setLayers} layerIndex={layerIndex} />
 				</div>
 				<div className="Network-Compiler-Conatainer">
-					<InputData compilerSettings={compilerSettings} setCompilerSettings={setCompilerSettings} layers={layers} setResult={setResult} />
+					<InputData
+						compilerSettings={compilerSettings}
+						setCompilerSettings={setCompilerSettings}
+						layers={layers}
+						setResult={setResult}
+						setUntrainedWeights={setUntrainedWeights}
+						setTrainedWeights={setUntrainedWeights}
+					/>
 					<NeuralVisual layers={layers} setLayerIndex={setLayerIndex} setLayers={setLayers} layerIndex={layerIndex} />
 					<div className="compile-data">
 						<div id="accuracy-chart"></div>
@@ -42,9 +50,6 @@ export default function NeuralBuilder() {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="input-visual-container">
-					<GraphVisualizer />
 				</div>
 			</div>
 		</>

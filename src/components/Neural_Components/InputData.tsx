@@ -11,9 +11,11 @@ interface Props {
 	setCompilerSettings: any;
 	layers: Layer[];
 	setResult: any;
+	setUntrainedWeights: any;
+	setTrainedWeights: any;
 }
 
-export default function InputData({ setCompilerSettings, compilerSettings, layers, setResult }: Props) {
+export default function InputData({ setCompilerSettings, compilerSettings, layers, setResult, setTrainedWeights, setUntrainedWeights }: Props) {
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const compilerCopy = { ...compilerSettings };
 		switch (event.target.className) {
@@ -47,6 +49,9 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				const valLoss = response.data.history.history.val_loss;
 
 				setResult({ acc: acc[acc.length - 1], valAcc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], valLoss: valLoss[valLoss.length - 1] });
+				setTrainedWeights(response.data.trainedWeights);
+				setUntrainedWeights(response.data.untrainedWeights);
+
 				const formattedData: HistoryData = {
 					epoch: response.data.history.epoch,
 					history: {
@@ -56,7 +61,6 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 						acc: response.data.history.history.acc,
 					},
 				};
-				console.log(history);
 
 				createLineGraph(formattedData, "#accuracy-chart", "accuracy");
 				createLineGraph(formattedData, "#loss-chart", "loss");

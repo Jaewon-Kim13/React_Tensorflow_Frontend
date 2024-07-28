@@ -1,6 +1,8 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Layer } from "../../scripts/NeuralScripts";
 import { RotateWithOffset } from "@tensorflow/tfjs";
+import DropdownMenu from "../DropdownMenu";
+
 import "./css/NeuralVisual.css";
 
 interface Props {
@@ -11,6 +13,9 @@ interface Props {
 }
 
 function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex }: Props) {
+	const [modelList, setModelList] = useState<string[]>(["Error Fetching Models", "Test"]);
+	const [modelName, setModelName] = useState<string>(modelList[0]);
+
 	const handleLayerChange = (index: number) => {
 		setLayerIndex(index);
 	};
@@ -53,13 +58,18 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex }: Props) {
 		<>
 			<div className="Network-container">
 				<div className="layer-update">
-					<button className="decrease" onClick={handleLayerSize}>
-						-
-					</button>
-					Layers
-					<button className="increase" onClick={handleLayerSize}>
-						+
-					</button>
+					<div className="increment-layers">
+						<button className="decrease" onClick={handleLayerSize}>
+							-
+						</button>
+						Layers
+						<button className="increase" onClick={handleLayerSize}>
+							+
+						</button>
+					</div>
+					<div className="select-model">
+						<DropdownMenu label="Model-name" items={modelList} setState={setModelName} state={modelName} />
+					</div>
 				</div>
 				<div className="Network">
 					{layers.map((curr, index) => (
