@@ -35,7 +35,7 @@ export default function NeuralBuilder() {
 						layers={layers}
 						setResult={setResult}
 						setUntrainedWeights={setUntrainedWeights}
-						setTrainedWeights={setUntrainedWeights}
+						setTrainedWeights={setTrainedWeights}
 					/>
 					<NeuralVisual
 						layers={layers}

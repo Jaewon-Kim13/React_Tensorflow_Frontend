@@ -136,3 +136,92 @@ export function createLineGraph(data: any, container: string, type: "accuracy" |
 		window.removeEventListener("resize", updateGraph);
 	};
 }
+interface Margin {
+	top: number;
+	right: number;
+	bottom: number;
+	left: number;
+}
+
+export function createHeatmap(data: number[][], containerId: string): void {
+	// Clear any existing SVG
+	d3.select(`#${containerId}`).selectAll("*").remove();
+
+	// Set up dimensions
+	const margin: Margin = { top: 50, right: 50, bottom: 80, left: 50 };
+	const width: number = 800 - margin.left - margin.right;
+	const height: number = 600 - margin.top - margin.bottom;
+
+	// Create color scale
+	const colorScale = d3
+		.scaleLinear<string>()
+		.domain([d3.min(data, (row) => d3.min(row)) || 0, 0, d3.max(data, (row) => d3.max(row)) || 0])
+		.range(["black", "gray", "white"]);
+
+	// Create SVG
+	const svg = d3
+		.select(`#${containerId}`)
+		.append("svg")
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.append("g")
+		.attr("transform", `translate(${margin.left},${margin.top})`);
+
+	// Create scales for x and y
+	const x = d3.scaleBand().range([0, width]).domain(d3.range(data[0].length).map(String)).padding(0.01);
+
+	const y = d3.scaleBand().range([height, 0]).domain(d3.range(data.length).map(String)).padding(0.01);
+
+	// Create the heatmap rectangles
+	svg
+		.selectAll<SVGRectElement, number>("rect")
+		.data(data.flat())
+		.enter()
+		.append("rect")
+		.attr("x", (d, i) => x(String(i % data[0].length)) || 0)
+		.attr("y", (d, i) => y(String(Math.floor(i / data[0].length))) || 0)
+		.attr("width", x.bandwidth())
+		.attr("height", y.bandwidth())
+		.style("fill", (d) => colorScale(d));
+
+	// Add x-axis
+	svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
+
+	// Add y-axis
+	svg.append("g").call(d3.axisLeft(y));
+
+	// Add title
+	svg
+		.append("text")
+		.attr("x", width / 2)
+		.attr("y", -20)
+		.attr("text-anchor", "middle")
+		.style("font-size", "20px")
+		.text("Black and White 2D Array Heatmap");
+
+	// Add color legend
+	const legendWidth: number = width * 0.8;
+	const legendHeight: number = 20;
+
+	const legendSvg = svg.append("g").attr("transform", `translate(${width * 0.1},${height + 40})`);
+
+	const legendScale = d3
+		.scaleLinear()
+		.domain([d3.min(data, (row) => d3.min(row)) || 0, d3.max(data, (row) => d3.max(row)) || 0])
+		.range([0, legendWidth]);
+
+	const legendAxis = d3.axisBottom(legendScale).ticks(5);
+
+	legendSvg.append("g").attr("transform", `translate(0,${legendHeight})`).call(legendAxis);
+
+	const defs = legendSvg.append("defs");
+
+	const gradient = defs.append("linearGradient").attr("id", "color-gradient").attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
+
+	gradient.append("stop").attr("offset", "0%").attr("stop-color", "black");
+
+	gradient.append("stop").attr("offset", "50%").attr("stop-color", "gray");
+
+	gradient.append("stop").attr("offset", "100%").attr("stop-color", "white");
+
+	legendSvg.append("rect").attr("width", legendWidth).attr("height", legendHeight).style("fill", "url(#color-gradient)");
+}

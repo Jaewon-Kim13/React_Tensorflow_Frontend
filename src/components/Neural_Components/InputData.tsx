@@ -42,7 +42,7 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 		axios
 			.post("http://localhost:8804/compile", data)
 			.then((response) => {
-				console.log(response.data);
+				//console.log(response.data);
 				const acc = response.data.history.history.acc;
 				const valAcc = response.data.history.history.val_acc;
 
@@ -51,9 +51,21 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 
 				setResult({ acc: acc[acc.length - 1], valAcc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], valLoss: valLoss[valLoss.length - 1] });
 
-				convertConv2DWeights(response.data.trainedWeights[0][0]);
-				setTrainedWeights(response.data.trainedWeights);
-				setUntrainedWeights(response.data.untrainedWeights);
+				const fixedTrainedWeights = [];
+				const fixedUntrainedWeights = [];
+				for (let i = 0; i < layers.length; i++) {
+					let temp = response.data.trainedWeights[i];
+					let temp1 = response.data.untrainedWeights[i];
+					if (layers[i].type == "Conv2D") {
+						temp = [convertConv2DWeights(temp[0]), temp[1]];
+						temp1 = [convertConv2DWeights(temp1[0]), temp1[1]];
+					}
+					fixedTrainedWeights.push(temp);
+					fixedUntrainedWeights.push(temp1);
+				}
+				setTrainedWeights(fixedTrainedWeights);
+				setUntrainedWeights(fixedUntrainedWeights);
+				//console.log(fixedTrainedWeights);
 
 				const formattedData: HistoryData = {
 					epoch: response.data.history.epoch,
@@ -130,8 +142,6 @@ const convertConv2DWeights = (weights: number[][][][]) => {
 			}
 		}
 	}
-
-	console.log(kernelSize, numFilters, filters);
 
 	return filters;
 };
