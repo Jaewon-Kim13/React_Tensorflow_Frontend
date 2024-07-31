@@ -50,6 +50,8 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				const valLoss = response.data.history.history.val_loss;
 
 				setResult({ acc: acc[acc.length - 1], valAcc: valAcc[valAcc.length - 1], loss: loss[loss.length - 1], valLoss: valLoss[valLoss.length - 1] });
+
+				convertConv2DWeights(response.data.trainedWeights[0][0]);
 				setTrainedWeights(response.data.trainedWeights);
 				setUntrainedWeights(response.data.untrainedWeights);
 
@@ -108,3 +110,28 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 		</>
 	);
 }
+
+const convertConv2DWeights = (weights: number[][][][]) => {
+	const kernelSize = weights.length;
+	const numFilters = weights[0][0][0].length;
+	const filters: number[][][] = [];
+
+	for (let i = 0; i < numFilters; i++) {
+		filters.push([]);
+		for (let j = 0; j < kernelSize; j++) {
+			filters[i].push([]);
+		}
+	}
+
+	for (let i = 0; i < kernelSize; i++) {
+		for (let j = 0; j < kernelSize; j++) {
+			for (let k = 0; k < numFilters; k++) {
+				filters[k][j].push(weights[j][i][0][k]);
+			}
+		}
+	}
+
+	console.log(kernelSize, numFilters, filters);
+
+	return filters;
+};
