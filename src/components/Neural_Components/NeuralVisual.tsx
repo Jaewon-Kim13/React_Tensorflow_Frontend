@@ -73,7 +73,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 								<div className="conv2d-trained">
 									{trainedWeights[i][0].map((curr: any, index: any) => {
 										createHeatmap(curr, `trained-${i}-${index}`);
-										return <div id={`trained-${i}-${index}`}>a</div>;
+										return <div id={`trained-${i}-${index}`} />;
 									})}
 								</div>
 							</div>
@@ -125,13 +125,15 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 					<div className="select-model">
 						<DropdownMenu label="Model-name" items={modelList} setState={setModelName} state={modelName} />
 					</div>
-					<div
-						onClick={() => {
-							setToggleWeights(!toggleWeights);
-						}}
-					>
-						Veiw Weights
-					</div>
+					{trainedWeights != null && (
+						<div
+							onClick={() => {
+								setToggleWeights(!toggleWeights);
+							}}
+						>
+							Veiw Weights
+						</div>
+					)}
 				</div>
 				{toggleWeights && trainedWeights != null && heatMap.map((curr: any, index: any) => curr)}
 				<div className="Network">
