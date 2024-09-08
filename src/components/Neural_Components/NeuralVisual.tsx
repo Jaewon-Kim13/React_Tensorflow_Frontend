@@ -19,6 +19,7 @@ interface Props {
 function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWeights, untrainedWeights }: Props) {
 	const [modelList, setModelList] = useState<string[]>(["Error Fetching Models", "Test"]);
 	const [modelName, setModelName] = useState<string>(modelList[0]);
+
 	const [toggleWeights, setToggleWeights] = useState<boolean>(false);
 	const [heatMap, setHeatMap] = useState<any>(null);
 
@@ -121,9 +122,6 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 						<button className="increase" onClick={handleLayerSize}>
 							+
 						</button>
-					</div>
-					<div className="select-model">
-						<DropdownMenu label="Model-name" items={modelList} setState={setModelName} state={modelName} />
 					</div>
 					{trainedWeights != null && (
 						<div

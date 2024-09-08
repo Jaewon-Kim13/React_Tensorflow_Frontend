@@ -16,6 +16,10 @@ interface Props {
 }
 
 export default function InputData({ setCompilerSettings, compilerSettings, layers, setResult, setTrainedWeights, setUntrainedWeights }: Props) {
+	const [error, setError] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [hasCompiled, setHasCompiled] = useState<boolean>(false);
+
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const compilerCopy = { ...compilerSettings };
 		switch (event.target.className) {
@@ -24,9 +28,6 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				break;
 			case "batch":
 				compilerCopy.batchSize = Number(event.target.value);
-				break;
-			case "noise":
-				compilerCopy.noise = Number(event.target.value);
 				break;
 			case "epochs":
 				compilerCopy.epochs = Number(event.target.value);
@@ -39,10 +40,11 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 
 	const compile = async (layers: Layer[], compilerSettings: CompilerSettings) => {
 		const data = { layers: layers, compilerSettings: compilerSettings };
+		console.log(compilerSettings);
 		axios
 			.post("http://localhost:8804/compile", data)
 			.then((response) => {
-				//console.log(response.data);
+				console.log(response.data);
 				const acc = response.data.history.history.acc;
 				const valAcc = response.data.history.history.val_acc;
 
@@ -79,9 +81,14 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 
 				createLineGraph(formattedData, "#accuracy-chart", "accuracy");
 				createLineGraph(formattedData, "#loss-chart", "loss");
+
+				setHasCompiled(true);
+				setLoading(false);
 			})
 			.catch((error) => {
-				console.log("ERROR: " + error);
+				console.log("Model Error");
+				setLoading(false);
+				setError(true);
 			});
 	};
 
@@ -93,14 +100,23 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 
 	return (
 		<>
+			{error && (
+				<div className="error-container">
+					<div className="error-message-box">
+						<div className="error-message">Model Structure Error! Please review your model to make sure it is valid!</div>
+						<button className="error-button" onClick={() => setError(!error)}>
+							X
+						</button>
+					</div>
+				</div>
+			)}
+			{loading && <div className="loading-message">Loading!!!!</div>}
 			<div className="data-input-container">
 				<div className="range-container">
 					<div>{`Ratio of training to test data: ${compilerSettings.ratio}%`}</div>
 					<input type="range" className="ratio" min="10" max="90" onChange={handleChange} value={compilerSettings.ratio} />
 					<div>{`Batch Size: ${Math.pow(2, compilerSettings.batchSize)}`}</div>
 					<input type="range" className="batch" min="1" max="10" onChange={handleChange} value={compilerSettings.batchSize} />
-					<div>{`Noise: ${compilerSettings.noise / 100}`}</div>
-					<input type="range" className="noise" min="0" max="100" onChange={handleChange} value={compilerSettings.noise} />
 					<div>{`Epochs: ${compilerSettings.epochs}`}</div>
 					<input type="range" className="epochs" min="1" max="10" onChange={handleChange} value={compilerSettings.epochs} />
 				</div>
@@ -113,11 +129,21 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 				</div>
 				<button
 					onClick={() => {
+						setLoading(true);
 						compile(layers, compilerSettings);
 					}}
 				>
 					COMPILE
 				</button>
+				{hasCompiled && (
+					<button
+						onClick={() => {
+							setHasCompiled(false);
+						}}
+					>
+						SAVE MODEL
+					</button>
+				)}
 			</div>
 		</>
 	);
