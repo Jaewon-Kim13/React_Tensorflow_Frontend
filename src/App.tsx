@@ -5,8 +5,6 @@ import Predict from "./pages/Predict";
 import "./App.css";
 import { useState } from "react";
 import axios from "axios";
-import { hash } from "bcryptjs";
-const saltRounds = 10;
 
 function App() {
 	const [clickedLogin, setClickedLogin] = useState<boolean>(false);
@@ -18,10 +16,10 @@ function App() {
 	const createAccount = async () => {
 		const username = (document.getElementById("user") as HTMLInputElement).value;
 		const password = (document.getElementById("pass") as HTMLInputElement).value;
-		const data = { username: username, passwordHash: null };
-		hash(password, saltRounds, function (err: any, hash: any) {
-			data.passwordHash = hash;
-		});
+
+		console.log(`Create: Username:${username} \nPassword:${password}`);
+
+		const data = { username: username, password: password };
 
 		axios
 			.post("http://localhost:8804/create-user", data)
@@ -29,6 +27,8 @@ function App() {
 				setSessionKey(response.data.sessionKey);
 				setUsername(username);
 				setIsLoggedin(true);
+
+				console.log("New Session Key: " + response.data.sessionKey);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -38,14 +38,11 @@ function App() {
 	const login = async () => {
 		const username = (document.getElementById("user") as HTMLInputElement).value;
 		const password = (document.getElementById("pass") as HTMLInputElement).value;
-		let passwordHash;
-		hash(password, saltRounds, function (err: any, hash: any) {
-			passwordHash = hash;
-		});
 
 		axios
-			.get(`http://localhost:8804/login/:${username}/:${passwordHash}`)
+			.get(`http://localhost:8804/login/${username}/${password}`)
 			.then((response) => {
+				console.log("Login session Key: " + response.data.sessionKey);
 				setSessionKey(response.data.sessionKey);
 				setUsername(username);
 				setIsLoggedin(true);
@@ -81,11 +78,11 @@ function App() {
 			{clickedLogin && (
 				<>
 					<div className="login-box">
-						<div>If you already have an account press login</div>
-						<input type="text" maxLength={20} minLength={8} placeholder="username" id="user" />
-						<input type="text" maxLength={20} minLength={8} placeholder="password" id="pass" />
-						<button onClick={() => 0}>login</button>
-						<button onClick={() => 0}>create account</button>
+						<div>{`TESTUSER TESTPASSWORD Session Key: ${sessionKey}`}</div>
+						<input type="text" maxLength={20} minLength={5} placeholder="username" id="user" />
+						<input type="text" maxLength={20} minLength={5} placeholder="password" id="pass" />
+						<button onClick={() => login()}>login</button>
+						<button onClick={() => createAccount()}>create account</button>
 					</div>
 				</>
 			)}
