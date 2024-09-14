@@ -54,20 +54,19 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 		let jsxArray = [];
 
 		for (let i = 0; i < divNum; i++) {
-			jsxArray.push(
-				<div
-					className="neuron"
-					key={`[${index},${i}]`}
-					onClick={() => {
-						setHeatMapIndex([index, i]);
-						setToggleWeights(!toggleWeights);
-						console.log(`Clicked: ${[index, i]} Showing: ${heatMapIndex} toggle: ${toggleWeights}`);
-					}}
-				>{`Filter: ${i}`}</div>
-			);
+			jsxArray.push(<div className="neuron" id={`${index},${i}`} onClick={handleNeuron}>{`Filter: ${i}`}</div>);
 		}
 
 		return jsxArray;
+	};
+
+	const handleNeuron = (event: React.MouseEvent<HTMLDivElement>) => {
+		const arr = event.currentTarget.id.split(",").map((curr) => Number(curr));
+
+		console.log("ID: " + arr);
+		if (trainedWeights != null) setToggleWeights(true);
+		setHeatMapIndex(arr);
+		console.log(`Clicked: ${arr} Showing: [${heatMapIndex}] toggle: ${!toggleWeights}`);
 	};
 
 	const handleLayerSize = (event: any) => {
@@ -83,53 +82,42 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 	};
 
 	useEffect(() => {
-		const weightsToVisual = () => {
-			const jsxArray: any = [[]];
-			for (let i = 0; i < layers.length; i++) {
-				if (layers[i].type == "Conv2D") {
-					const temp: any = layers[i].layer;
-					const rowSize = temp.kernelSize;
-					let conv2d = (
-						<>
-							<div className="weights">
-								<div className="conv2d-trained">
-									{trainedWeights[i][0].map((curr: any, index: any) => {
-										createHeatmap(curr, `trained-${i}-${index}`);
-										return <div id={`trained-${i}-${index}`} />;
-									})}
+		const weightsToVisual = (index: number[]) => {
+			let node = <></>;
+			if (layers[index[0]].type == "Conv2D") {
+				createHeatmap(trainedWeights[index[0]][0][index[1]], `trained-${index[0]}-${index[1]}`);
+				node = (
+					<>
+						<div className="weights">
+							<div className="conv2d-trained">
+								<div id={`trained-${index[0]}-${index[1]}`} />;
+							</div>
+						</div>
+					</>
+				);
+			} else if (layers[index[0]].type == "Dense") {
+				node = (
+					<>
+						<div className="weights">
+							<div className="dense-trained">
+								<div className="dense-weight" key={index.toString()}>
+									{trainedWeights[index[0]][0][index[1]]}
 								</div>
 							</div>
-						</>
-					);
-					jsxArray[i].push(conv2d);
-				} else if (layers[i].type == "Dense") {
-					let dense = (
-						<>
-							<div className="weights">
-								<div className="dense-trained">
-									{trainedWeights[i][0].map((curr: any, index: any) => (
-										<div className="dense-weight" key={index}>
-											{curr}
-										</div>
-									))}
-								</div>
-								<div className="dense-untrained"></div>
-							</div>
-						</>
-					);
-					jsxArray[i].push(dense);
-				} else {
-					jsxArray[i].push(<div className="weights">no wieght</div>);
-				}
+						</div>
+					</>
+				);
 			}
 
-			return jsxArray;
+			return node;
 		};
 
-		if (trainedWeights != null) {
-			setHeatMap(weightsToVisual());
+		if (trainedWeights != null && heatMapIndex != undefined) {
+			let temp = weightsToVisual(heatMapIndex);
+			setHeatMap(weightsToVisual(heatMapIndex));
+			console.log(temp);
 		}
-	}, [trainedWeights, toggleWeights, heatMapIndex]);
+	}, [heatMapIndex, toggleWeights, heatMap]);
 
 	return (
 		<>
@@ -147,7 +135,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 					{trainedWeights != null && toggleWeights && heatMapIndex != undefined && (
 						<>
 							<Popup state={toggleWeights} setState={setToggleWeights}>
-								xxx
+								{heatMap}
 							</Popup>
 						</>
 					)}
