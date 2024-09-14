@@ -6,6 +6,7 @@ import DropdownMenu from "../DropdownMenu";
 import "./css/NeuralVisual.css";
 import Canvas from "../Canvas";
 import { createHeatmap } from "../../scripts/D3Scripts";
+import Popup from "../Popup";
 
 interface Props {
 	layers: Layer[];
@@ -20,6 +21,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 	const [modelList, setModelList] = useState<string[]>(["Error Fetching Models", "Test"]);
 	const [modelName, setModelName] = useState<string>(modelList[0]);
 
+	const [heatMapIndex, setHeatMapIndex] = useState<number[]>();
 	const [toggleWeights, setToggleWeights] = useState<boolean>(false);
 	const [heatMap, setHeatMap] = useState<any>(null);
 
@@ -27,23 +29,42 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 		setLayerIndex(index);
 	};
 
-	const denseBuilder = (layer: any) => {
+	const denseBuilder = (layer: any, index: any) => {
 		let divNum = layer.layer.units;
 		let jsxArray = [];
 
 		for (let i = 0; i < divNum; i++) {
-			jsxArray.push(<div className="neuron">{`Unit: ${i}`}</div>);
+			jsxArray.push(
+				<div
+					className="neuron"
+					key={i.toString()}
+					onClick={() => {
+						setHeatMapIndex([index, i]);
+						setToggleWeights(!toggleWeights);
+					}}
+				>{`Unit: ${i}`}</div>
+			);
 		}
 
 		return jsxArray;
 	};
 
-	const conv2DBulder = (layer: any) => {
+	const conv2DBulder = (layer: any, index: any) => {
 		let divNum = layer.layer.filters;
 		let jsxArray = [];
 
 		for (let i = 0; i < divNum; i++) {
-			jsxArray.push(<div className="neuron">{`Filter: ${i}`}</div>);
+			jsxArray.push(
+				<div
+					className="neuron"
+					key={`[${index},${i}]`}
+					onClick={() => {
+						setHeatMapIndex([index, i]);
+						setToggleWeights(!toggleWeights);
+						console.log(`Clicked: ${[index, i]} Showing: ${heatMapIndex} toggle: ${toggleWeights}`);
+					}}
+				>{`Filter: ${i}`}</div>
+			);
 		}
 
 		return jsxArray;
@@ -63,7 +84,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 
 	useEffect(() => {
 		const weightsToVisual = () => {
-			const jsxArray = [];
+			const jsxArray: any = [[]];
 			for (let i = 0; i < layers.length; i++) {
 				if (layers[i].type == "Conv2D") {
 					const temp: any = layers[i].layer;
@@ -80,14 +101,14 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 							</div>
 						</>
 					);
-					jsxArray.push(conv2d);
+					jsxArray[i].push(conv2d);
 				} else if (layers[i].type == "Dense") {
 					let dense = (
 						<>
 							<div className="weights">
 								<div className="dense-trained">
 									{trainedWeights[i][0].map((curr: any, index: any) => (
-										<div className="dense-weight" key="index">
+										<div className="dense-weight" key={index}>
 											{curr}
 										</div>
 									))}
@@ -96,9 +117,9 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 							</div>
 						</>
 					);
-					jsxArray.push(dense);
+					jsxArray[i].push(dense);
 				} else {
-					jsxArray.push(<div className="weights">no wieght</div>);
+					jsxArray[i].push(<div className="weights">no wieght</div>);
 				}
 			}
 
@@ -108,7 +129,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 		if (trainedWeights != null) {
 			setHeatMap(weightsToVisual());
 		}
-	}, [trainedWeights, toggleWeights]);
+	}, [trainedWeights, toggleWeights, heatMapIndex]);
 
 	return (
 		<>
@@ -123,25 +144,22 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 							+
 						</button>
 					</div>
-					{trainedWeights != null && (
-						<div
-							onClick={() => {
-								setToggleWeights(!toggleWeights);
-							}}
-						>
-							Veiw Weights
-						</div>
+					{trainedWeights != null && toggleWeights && heatMapIndex != undefined && (
+						<>
+							<Popup state={toggleWeights} setState={setToggleWeights}>
+								xxx
+							</Popup>
+						</>
 					)}
 				</div>
-				{toggleWeights && trainedWeights != null && heatMap.map((curr: any, index: any) => curr)}
 				<div className="Network">
 					{layers.map((curr, index) => (
 						<>
 							<div className="layer" onClick={() => handleLayerChange(index)}>
 								<div className="layer-title">{`${curr.type}`.padEnd(12, "x")}</div>
-								<div key={index} className={curr.type}>
-									{curr.type == "Dense" && denseBuilder(curr).map((curr) => curr)}
-									{curr.type == "Conv2D" && conv2DBulder(curr).map((curr) => curr)}
+								<div key={index + "z"} className={curr.type}>
+									{curr.type == "Dense" && denseBuilder(curr, index).map((curr) => curr)}
+									{curr.type == "Conv2D" && conv2DBulder(curr, index).map((curr) => curr)}
 								</div>
 							</div>
 						</>

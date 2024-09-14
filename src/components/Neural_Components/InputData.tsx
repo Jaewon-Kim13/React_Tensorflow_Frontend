@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Canvas from "../Canvas";
 import { conv2dTranspose, div, Optimizer } from "@tensorflow/tfjs";
 import { CompilerSettings, Layer, optimizerList } from "../../scripts/NeuralScripts";
 import DropdownMenu from "../DropdownMenu";
 import axios from "axios";
 import { createLineGraph, HistoryData } from "../../scripts/D3Scripts";
+import Popup from "../Popup";
 
 interface Props {
 	compilerSettings: CompilerSettings;
@@ -100,17 +101,13 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 
 	return (
 		<>
-			{error && (
-				<div className="error-container">
-					<div className="error-message-box">
-						<div className="error-message">Model Structure Error! Please review your model to make sure it is valid!</div>
-						<button className="error-button" onClick={() => setError(!error)}>
-							X
-						</button>
-					</div>
-				</div>
-			)}
-			{loading && <div className="loading-message">Loading!!!!</div>}
+			<Popup state={error} setState={setError}>
+				<div className="error-message">Model Structure Error! Please review your model to make sure it is valid!</div>
+			</Popup>
+
+			<Popup state={loading} setState={setLoading}>
+				<div className="loading-message">Loading!!!!</div>
+			</Popup>
 			<div className="data-input-container">
 				<div className="range-container">
 					<div>{`Ratio of training to test data: ${compilerSettings.ratio}%`}</div>
@@ -136,13 +133,16 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 					COMPILE
 				</button>
 				{hasCompiled && (
-					<button
-						onClick={() => {
-							setHasCompiled(false);
-						}}
-					>
-						SAVE MODEL
-					</button>
+					<>
+						<button
+							onClick={() => {
+								setHasCompiled(false);
+							}}
+						>
+							SAVE MODEL
+						</button>
+						<div>Click on the Filter's or Dense neurons to view their weights!</div>
+					</>
 				)}
 			</div>
 		</>
