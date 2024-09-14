@@ -15,7 +15,7 @@ interface Point {
 	y: number;
 }
 
-export function createLineGraph(data: any, container: string, type: "accuracy" | "loss") {
+export async function createLineGraph(data: any, container: string, type: "accuracy" | "loss") {
 	d3.select(container).html("");
 	// Check if data is in the expected format
 	if (!data || !data.epoch || !data.history) {

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Layer } from "../../scripts/NeuralScripts";
 import { layers, RotateWithOffset } from "@tensorflow/tfjs";
 import DropdownMenu from "../DropdownMenu";
@@ -7,6 +7,7 @@ import "./css/NeuralVisual.css";
 import Canvas from "../Canvas";
 import { createHeatmap } from "../../scripts/D3Scripts";
 import Popup from "../Popup";
+import useForceUpdate from "../../hooks/ForceUpdate";
 
 interface Props {
 	layers: Layer[];
@@ -17,7 +18,7 @@ interface Props {
 	trainedWeights: any;
 }
 
-function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWeights, untrainedWeights }: Props) {
+function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWeights }: Props) {
 	const [modelList, setModelList] = useState<string[]>(["Error Fetching Models", "Test"]);
 	const [modelName, setModelName] = useState<string>(modelList[0]);
 
@@ -65,7 +66,9 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 
 		console.log("ID: " + arr);
 		if (trainedWeights != null) setToggleWeights(true);
-		setHeatMapIndex(arr);
+		setHeatMapIndex(() => {
+			return arr;
+		});
 		console.log(`Clicked: ${arr} Showing: [${heatMapIndex}] toggle: ${!toggleWeights}`);
 	};
 
@@ -81,43 +84,54 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 		}
 	};
 
-	useEffect(() => {
-		const weightsToVisual = (index: number[]) => {
-			let node = <></>;
-			if (layers[index[0]].type == "Conv2D") {
-				createHeatmap(trainedWeights[index[0]][0][index[1]], `trained-${index[0]}-${index[1]}`);
-				node = (
-					<>
-						<div className="weights">
-							<div className="conv2d-trained">
-								<div id={`trained-${index[0]}-${index[1]}`} />;
-							</div>
-						</div>
-					</>
-				);
-			} else if (layers[index[0]].type == "Dense") {
-				node = (
-					<>
-						<div className="weights">
-							<div className="dense-trained">
-								<div className="dense-weight" key={index.toString()}>
-									{trainedWeights[index[0]][0][index[1]]}
-								</div>
-							</div>
-						</div>
-					</>
-				);
-			}
-
-			return node;
-		};
-
-		if (trainedWeights != null && heatMapIndex != undefined) {
-			let temp = weightsToVisual(heatMapIndex);
-			setHeatMap(weightsToVisual(heatMapIndex));
-			console.log(temp);
+	const weightsToVisual = async () => {
+		if (!trainedWeights || heatMapIndex === undefined || heatMapIndex.length === 0) {
+			return null;
 		}
-	}, [heatMapIndex, toggleWeights, heatMap]);
+		let index = heatMapIndex;
+
+		let node = <></>;
+		if (layers[index[0]].type == "Conv2D") {
+			node = (
+				<>
+					<div className="weights">
+						<div className="conv2d-trained">
+							<div id={"weights"} />
+							{`trained-${index[0]}-${index[1]}`}
+						</div>
+					</div>
+				</>
+			);
+		} else if (layers[index[0]].type == "Dense") {
+			node = (
+				<>
+					<div className="weights">
+						<div className="dense-trained">
+							<div className="dense-weight" key={index.toString()}>
+								{trainedWeights[index[0]][0][index[1]]}
+							</div>
+						</div>
+					</div>
+				</>
+			);
+		}
+		return node;
+	};
+
+	useEffect(() => {
+		const fetchHeatMap = async () => {
+			try {
+				if (heatMapIndex === undefined) return null;
+				let index = heatMapIndex;
+				setHeatMap(await weightsToVisual());
+				console.log(heatMap);
+				await createHeatmap(trainedWeights[index[0]][0][index[1]], "weights");
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchHeatMap();
+	}, [heatMapIndex]);
 
 	return (
 		<>
@@ -135,7 +149,7 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 					{trainedWeights != null && toggleWeights && heatMapIndex != undefined && (
 						<>
 							<Popup state={toggleWeights} setState={setToggleWeights}>
-								{heatMap}
+								<div id="weights">{heatMapIndex}</div>
 							</Popup>
 						</>
 					)}

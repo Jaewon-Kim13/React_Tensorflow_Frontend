@@ -62,6 +62,9 @@ export default function InputData({ setCompilerSettings, compilerSettings, layer
 					if (layers[i].type == "Conv2D") {
 						temp = [convertConv2DWeights(temp[0]), temp[1]];
 						temp1 = [convertConv2DWeights(temp1[0]), temp1[1]];
+					} else if (layers[i].type == "Dense") {
+						temp = [convertDenseWeights(temp[0]), temp[1]];
+						temp1 = [convertDenseWeights(temp1[0]), temp1[1]];
 					}
 					fixedTrainedWeights.push(temp);
 					fixedUntrainedWeights.push(temp1);
@@ -170,4 +173,15 @@ const convertConv2DWeights = (weights: number[][][][]) => {
 	}
 
 	return filters;
+};
+
+const convertDenseWeights = (weights: number[][]) => {
+	console.log("inside convert, input is: " + weights.length + "x" + weights[0].length);
+	let units: number[][] = [];
+	for (let i = 0; i < weights.length; i++) {
+		for (let j = 0; j < weights[i].length; j++) {
+			if (units.length < j + 1) units.push([]);
+			units[j].push(weights[i][j]);
+		}
+	}
 };
