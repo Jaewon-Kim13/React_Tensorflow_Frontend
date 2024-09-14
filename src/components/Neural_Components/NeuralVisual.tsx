@@ -84,48 +84,11 @@ function NeuralVisual({ layers, setLayerIndex, setLayers, layerIndex, trainedWei
 		}
 	};
 
-	const weightsToVisual = async () => {
-		if (!trainedWeights || heatMapIndex === undefined || heatMapIndex.length === 0) {
-			return null;
-		}
-		let index = heatMapIndex;
-
-		let node = <></>;
-		if (layers[index[0]].type == "Conv2D") {
-			node = (
-				<>
-					<div className="weights">
-						<div className="conv2d-trained">
-							<div id={"weights"} />
-							{`trained-${index[0]}-${index[1]}`}
-						</div>
-					</div>
-				</>
-			);
-		} else if (layers[index[0]].type == "Dense") {
-			node = (
-				<>
-					<div className="weights">
-						<div className="dense-trained">
-							<div className="dense-weight" key={index.toString()}>
-								{trainedWeights[index[0]][0][index[1]]}
-							</div>
-						</div>
-					</div>
-				</>
-			);
-		}
-		return node;
-	};
-
 	useEffect(() => {
 		const fetchHeatMap = async () => {
 			try {
 				if (heatMapIndex === undefined) return null;
-				let index = heatMapIndex;
-				setHeatMap(await weightsToVisual());
-				console.log(heatMap);
-				await createHeatmap(trainedWeights[index[0]][0][index[1]], "weights");
+				await createHeatmap(trainedWeights[heatMapIndex[0]][0][heatMapIndex[1]], "weights");
 			} catch (error) {
 				console.error(error);
 			}
